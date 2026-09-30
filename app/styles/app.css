@@ -1,0 +1,437 @@
+@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource-variable/instrument-sans/index.css";
+@import "@fontsource-variable/jetbrains-mono/index.css";
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   Tokens — charte SKANCYBER (direction E « bit-s »)
+   Monochrome chaud + un seul signal : le « bit actif ».
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --color-ink: #0b0b0d;
+  --color-graphite: #111114;
+  --color-carbon: #16161a;
+  --color-bone: #f4f4f2;
+  --color-ash: #a0a0a6;
+  --color-smoke: #6c6c74;
+  --color-signal: #ff6a4a;
+  --color-signal-deep: #e14f30;
+
+  --font-display: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Instrument Sans Variable", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+
+  --breakpoint-xs: 26rem;
+  --breakpoint-3xl: 112rem;
+
+  --ease-precise: cubic-bezier(0.7, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --gutter: clamp(1rem, 3.2vw, 3rem);
+  --line: rgb(244 244 242 / 0.09);
+  --line-strong: rgb(244 244 242 / 0.18);
+  --nav-h: 4.5rem;
+  color-scheme: dark;
+}
+
+/* ─── Base ─────────────────────────────────────────────────── */
+@layer base {
+  html {
+    background: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+  body {
+    min-height: 100svh;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+  img,
+  svg,
+  canvas,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+/* ─── Typographie ─────────────────────────────────────────── */
+@layer components {
+  .t-display {
+    font-family: var(--font-display);
+    font-stretch: 118%;
+    font-weight: 560;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+  }
+  .t-mega {
+    font-size: clamp(3rem, 9.4vw, 11.5rem);
+  }
+  .t-h1 {
+    font-size: clamp(2.6rem, 6.6vw, 7.5rem);
+  }
+  .t-h2 {
+    font-size: clamp(2.1rem, 4.6vw, 5rem);
+    line-height: 0.98;
+  }
+  .t-h3 {
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 540;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-size: clamp(1.45rem, 2.2vw, 2.1rem);
+  }
+  .t-lead {
+    font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    color: var(--color-bone);
+  }
+  .t-body {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ash);
+  }
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 450;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+  .t-mono {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Contenu provisoire — volontairement identifiable */
+  .placeholder-tag {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+    border: 1px dashed color-mix(in srgb, var(--color-signal) 60%, transparent);
+    padding: 0.2rem 0.45rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .placeholder-text {
+    color: var(--color-signal);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    letter-spacing: 0.02em;
+  }
+
+  .shell {
+    width: 100%;
+    padding-inline: var(--gutter);
+    margin-inline: auto;
+    max-width: 120rem;
+  }
+  .hairline {
+    border-color: var(--line);
+  }
+
+  /* Soulignement animé */
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.15em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Repère de calage (croix de plan technique) */
+  .reg-mark {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    pointer-events: none;
+  }
+  .reg-mark::before,
+  .reg-mark::after {
+    content: "";
+    position: absolute;
+    background: var(--line-strong);
+  }
+  .reg-mark::before {
+    left: 5px;
+    top: 0;
+    width: 1px;
+    height: 11px;
+  }
+  .reg-mark::after {
+    top: 5px;
+    left: 0;
+    height: 1px;
+    width: 11px;
+  }
+
+  .skip-link {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 100;
+    transform: translateY(-200%);
+    background: var(--color-bone);
+    color: var(--color-ink);
+    padding: 0.75rem 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+}
+
+/* ─── États d'intro ───────────────────────────────────────────
+   Le HTML pré-rendu reste lisible sans JS. Avec JS, les éléments
+   marqués [data-intro] attendent leur animation d'entrée.       */
+.js:not(.reduced-motion):not(.intro-fallback) [data-intro] {
+  opacity: 0;
+}
+
+/* Curseur natif masqué uniquement si le curseur custom est actif */
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button,
+html.has-cursor [role="button"],
+html.has-cursor label {
+  cursor: none;
+}
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select {
+  cursor: text;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Boutons ─────────────────────────────────────────────── */
+@layer components {
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    height: 3.25rem;
+    padding: 0 1.35rem 0 1.1rem;
+    border-radius: 4px;
+    overflow: hidden;
+    isolation: isolate;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.5s var(--ease-out-expo), border-color 0.5s var(--ease-out-expo);
+  }
+  .btn-primary {
+    background: var(--color-bone);
+    color: var(--color-ink);
+  }
+  .btn-ghost {
+    color: var(--color-bone);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-fill {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-signal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .btn-ghost .btn-fill {
+    background: var(--color-bone);
+  }
+  .btn-bit {
+    width: 7px;
+    height: 7px;
+    border-radius: 1.5px;
+    background: var(--color-signal);
+    transition: background-color 0.4s, transform 0.5s var(--ease-out-expo);
+  }
+  .btn-label {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    line-height: 1.2;
+  }
+  .btn-label > span {
+    display: block;
+    transition: transform 0.55s var(--ease-out-expo);
+  }
+  .btn-label > span::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 100%;
+  }
+  .btn-icon {
+    transition: transform 0.55s var(--ease-out-expo);
+  }
+  .btn:hover .btn-fill,
+  .btn:focus-visible .btn-fill {
+    transform: scaleX(1);
+  }
+  .btn:hover .btn-label > span,
+  .btn:focus-visible .btn-label > span {
+    transform: translateY(-100%);
+  }
+  .btn:hover .btn-icon {
+    transform: translate(2px, -2px);
+  }
+  .btn-primary:hover .btn-bit {
+    background: var(--color-ink);
+    transform: rotate(90deg);
+  }
+  .btn-ghost:hover,
+  .btn-ghost:focus-visible {
+    color: var(--color-ink);
+    border-color: var(--color-bone);
+  }
+  .btn[disabled] {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Logo : les pixels éteints clignotent en cascade au survol */
+  .logo-link:hover .bit[data-state="0"] {
+    animation: bit-flicker 0.7s steps(2, jump-none) calc(var(--i) * 45ms) 1;
+  }
+}
+
+@keyframes bit-flicker {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* ─── Glyphes de bits ─────────────────────────────────────── */
+.bit-glyph rect {
+  fill: var(--color-bone);
+  fill-opacity: 0.07;
+  transition: fill-opacity 0.45s var(--ease-out-expo), fill 0.45s var(--ease-out-expo);
+}
+.bit-glyph--fast rect {
+  transition-duration: 0.12s;
+}
+.bit-glyph rect[data-s="1"] {
+  fill-opacity: 0.92;
+}
+.bit-glyph rect[data-s="2"] {
+  fill: var(--color-signal);
+  fill-opacity: 1;
+}
+.bit-glyph rect[data-s="3"] {
+  fill-opacity: 0.3;
+}
+
+.scroll-cue {
+  animation: scroll-cue 2.4s var(--ease-precise) infinite;
+}
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  55%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Lisibilité des blocs de la coupe au-dessus de la scène (mobile / tablette) */
+@media (max-width: 63.99rem) {
+  .coupe-card {
+    background: rgb(11 11 13 / 0.9);
+    border: 1px solid var(--line);
+    padding: 1.5rem;
+    border-radius: 4px;
+  }
+}
+
+/* ─── Index des services ──────────────────────────────────── */
+.service-row {
+  transition: opacity 0.5s var(--ease-out-expo);
+}
+.service-name {
+  display: inline-block;
+  transform-origin: left center;
+  transition: font-stretch 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo), color 0.5s;
+}
+@media (hover: hover) {
+  .services-list:hover .service-row {
+    opacity: 0.32;
+  }
+  .services-list .service-row:hover,
+  .services-list .service-row:focus-visible {
+    opacity: 1;
+  }
+  .service-row:hover .service-name {
+    font-stretch: 125%;
+    transform: translateX(0.75rem);
+  }
+}
