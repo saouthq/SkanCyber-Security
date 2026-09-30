@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev",
-    "build": "react-router build",
-    "preview": "vite preview --outDir build/client",
+    "build": "node --experimental-strip-types --no-warnings scripts/sitemap.mjs && react-router build",
+    "preview": "serve build/client -l 4173",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
+    "serve": "^14.2.6",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "vite": "^8.3.1"

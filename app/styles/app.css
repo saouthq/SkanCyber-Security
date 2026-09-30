@@ -111,6 +111,13 @@
     line-height: 1.05;
     font-size: clamp(1.45rem, 2.2vw, 2.1rem);
   }
+  .t-statement {
+    font-family: var(--font-display);
+    font-stretch: 104%;
+    font-weight: 430;
+    letter-spacing: -0.022em;
+    line-height: 1.16;
+  }
   .t-lead {
     font-size: clamp(1.15rem, 1.5vw, 1.45rem);
     line-height: 1.45;
@@ -433,5 +440,54 @@ html.has-cursor select {
   .service-row:hover .service-name {
     font-stretch: 125%;
     transform: translateX(0.75rem);
+  }
+}
+
+/* ─── Schémas ─────────────────────────────────────────────── */
+.arch-packet {
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 6px;
+  animation: packet-y 1.75s var(--ease-precise) infinite;
+}
+@media (min-width: 64rem) {
+  .arch-packet {
+    width: 8px;
+    height: 1px;
+    animation-name: packet-x;
+  }
+}
+@keyframes packet-y {
+  from {
+    transform: translateY(-8px);
+  }
+  to {
+    transform: translateY(26px);
+  }
+}
+@keyframes packet-x {
+  from {
+    transform: translateX(-10px);
+  }
+  to {
+    transform: translateX(34px);
+  }
+}
+.map-flow {
+  stroke-dasharray: 5 7;
+  animation: map-flow 1.2s linear infinite;
+}
+@keyframes map-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+.pv-blink {
+  animation: pv-blink 1.6s steps(2, jump-none) infinite;
+}
+@keyframes pv-blink {
+  50% {
+    opacity: 0.25;
   }
 }

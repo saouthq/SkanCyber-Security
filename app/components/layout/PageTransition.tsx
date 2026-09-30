@@ -126,6 +126,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
         onComplete: () => {
           gsap.set(el, { visibility: "hidden" });
           busy.current = false;
+          document.getElementById("main")?.focus({ preventScroll: true });
         },
       })
       .to(label, { autoAlpha: 0, y: -10, duration: 0.25, ease: "precise" })
