@@ -25,15 +25,15 @@ export function ArchitectureFlow({ nodes }: { nodes: Node[] }) {
     <ol ref={root} className="arch-flow mt-14 grid gap-3 lg:grid-flow-col lg:auto-cols-fr lg:gap-0">
       {nodes.map((n, i) => (
         <li key={n.label} className="relative flex flex-col lg:flex-row lg:items-center">
-          <div data-node className="relative z-[1] flex-1 rounded-[6px] border border-[var(--line-strong)] bg-ink p-5">
-            <span className="t-label text-signal">{String(i + 1).padStart(2, "0")}</span>
-            <p className="mt-4 text-bone">{n.label}</p>
-            <p className="t-mono mt-1 text-[0.75rem] text-smoke">{n.detail}</p>
+          <div data-node className="relative z-[1] flex-1 rounded-[1rem] bg-paper p-5">
+            <span className="t-num">{String(i + 1).padStart(2, "0")}</span>
+            <p className="mt-4 text-ui font-medium">{n.label}</p>
+            <p className="t-small mt-1">{n.detail}</p>
           </div>
           {i < nodes.length - 1 && (
             <span aria-hidden className="relative mx-auto h-6 w-px shrink-0 overflow-hidden lg:mx-0 lg:h-px lg:w-8">
               <span data-link className="absolute inset-0 origin-top bg-[var(--line-strong)] lg:origin-left" />
-              <span className="arch-packet absolute bg-signal" style={{ animationDelay: `${i * 0.35}s` }} />
+              <span className="arch-packet absolute bg-amber" style={{ animationDelay: `${i * 0.35}s` }} />
             </span>
           )}
         </li>

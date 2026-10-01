@@ -1,8 +1,7 @@
 import type { Route } from "./+types/expertise";
-import { CtaBand } from "~/components/layout/CtaBand";
 import { PageHero } from "~/components/layout/PageHero";
 import { PageShell } from "~/components/layout/PageShell";
-import { SectionMarker } from "~/components/ui/SectionMarker";
+import { Eyebrow } from "~/components/ui/Eyebrow";
 import { seo } from "~/lib/seo";
 import { SystemMap } from "~/sections/expertise/SystemMap";
 
@@ -25,35 +24,37 @@ export default function Expertise() {
   return (
     <PageShell>
       <PageHero
-        index="02"
+        index="04"
         label="Expertise"
-        title="Une stack choisie, pas empilée."
+        title={
+          <>
+            Une stack choisie, <span className="accent">pas</span> empilée.
+          </>
+        }
         lead="Explorez la carte : chaque domaine est relié aux autres, et la sécurité entoure l'ensemble. Sélectionnez un domaine pour voir nos pratiques et nos outils."
       />
 
-      <section aria-label="Carte d'expertise" className="shell pb-24 md:pb-36">
+      <section aria-label="Carte d'expertise" className="shell pb-[var(--spacing-section)]">
         <SystemMap />
       </section>
 
-      <section aria-labelledby="criteria-title" className="border-t border-[var(--line)] py-24 md:py-36">
+      <section aria-labelledby="criteria-title" className="section bg-white">
         <div className="shell">
-          <SectionMarker index="02.B" label="Critères de choix" />
-          <h2 id="criteria-title" data-reveal="lines" className="t-display t-h2 mt-8 max-w-[18ch]">
-            Chaque outil doit mériter sa place.
+          <Eyebrow index="B">Critères de choix</Eyebrow>
+          <h2 id="criteria-title" data-reveal="lines" className="t-display-m mt-8 max-w-[18ch]">
+            Chaque outil doit <span className="accent">mériter</span> sa place.
           </h2>
-          <ol className="mt-16 grid border-t border-[var(--line)] sm:grid-cols-2 lg:grid-cols-4" data-reveal="stagger">
+          <ol className="mt-16 grid gap-10 border-t border-[var(--line)] pt-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8" data-reveal="stagger">
             {criteria.map((c) => (
-              <li key={c.k} className="border-b border-[var(--line)] py-8 sm:pr-8 lg:border-b-0 lg:border-r lg:px-8 lg:first:pl-0 lg:last:border-r-0">
-                <span className="t-label text-signal">{c.k}</span>
-                <h3 className="t-h3 mt-6">{c.t}</h3>
-                <p className="t-body mt-3 text-[0.95rem]">{c.d}</p>
+              <li key={c.k}>
+                <span className="t-num">{c.k}</span>
+                <h3 className="t-title mt-5">{c.t}</h3>
+                <p className="t-small mt-3">{c.d}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
-
-      <CtaBand title="Une question d'architecture ou de choix technique ?" action="En parler" />
     </PageShell>
   );
 }

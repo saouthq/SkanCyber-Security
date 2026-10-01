@@ -11,15 +11,15 @@ import { TLink } from "~/components/ui/TLink";
 import { MobileMenu } from "./MobileMenu";
 
 /**
- * Navigation minimale : logo, cinq liens, un appel à l'action.
- * Se retire quand on descend, revient dès qu'on remonte.
+ * Navigation légère : logo, cinq liens, un appel à l'action.
+ * Transparente en haut de page, elle prend un fond papier au scroll,
+ * se retire quand on descend et revient dès qu'on remonte.
  */
 export function Nav() {
   const bar = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
 
-  // Masquage directionnel
   useEffect(() => {
     const el = bar.current;
     if (!el) return;
@@ -27,34 +27,31 @@ export function Nav() {
     let hidden = false;
     const onScroll = () => {
       const y = window.scrollY;
-      const down = y > last && y > 120;
+      const down = y > last && y > 160;
       if (down !== hidden) {
         hidden = down;
-        gsap.to(el, { yPercent: down ? -110 : 0, duration: 0.6, ease: "lock" });
+        gsap.to(el, { yPercent: down ? -105 : 0, duration: 0.7, ease: "lock" });
       }
-      el.dataset.scrolled = y > 40 ? "true" : "false";
+      el.dataset.scrolled = y > 24 ? "true" : "false";
       last = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Entrée au premier chargement
   useEffect(() => {
     const el = bar.current;
     if (!el || prefersReducedMotion()) return;
     return pageLifecycle.onReady(() => {
       gsap.fromTo(
         el.querySelectorAll("[data-nav-item]"),
-        { autoAlpha: 0, y: -12 },
-        { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.05, delay: 0.2, ease: "lock" },
+        { autoAlpha: 0, y: -10 },
+        { autoAlpha: 1, y: 0, duration: 1, stagger: 0.05, delay: 0.15, ease: "lock" },
       );
     });
   }, []);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
     const lenis = getLenis();
@@ -67,50 +64,48 @@ export function Nav() {
       <header
         ref={bar}
         data-scrolled="false"
-        className="group/nav fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color] duration-500 data-[scrolled=true]:border-[var(--line)] data-[scrolled=true]:bg-ink/92"
+        className="fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow] duration-500 data-[scrolled=true]:bg-paper/92 data-[scrolled=true]:shadow-[0_1px_0_var(--line)]"
       >
-        <nav aria-label="Navigation principale" className="shell flex h-[var(--nav-h)] items-center justify-between gap-6">
-          <TLink to="/" className="logo-link relative z-[70] -m-2 p-2" aria-label="SkanCyber Security — accueil" data-nav-item data-intro>
-            <Logo className="h-7 w-auto md:h-8" />
+        <nav aria-label="Navigation principale" className="shell flex h-[var(--nav-h)] items-center justify-between gap-8">
+          <TLink to="/" aria-label="SkanCyber Security — accueil" className="relative z-[70] -m-2 p-2" data-nav-item data-intro>
+            <Logo className="h-8 w-auto md:h-9" />
           </TLink>
 
-          <ul className="hidden items-center gap-8 lg:flex">
-            {primaryNav.map((item) => {
-              const active = pathname.startsWith(item.to);
-              return (
-                <li key={item.to} data-nav-item data-intro>
-                  <TLink
-                    to={item.to}
-                    aria-current={active ? "page" : undefined}
-                    className="group relative flex items-baseline gap-1.5 py-2 text-[0.9375rem] text-ash transition-colors duration-300 hover:text-bone aria-[current=page]:text-bone"
-                  >
-                    <span className="t-label text-[0.5625rem] text-smoke transition-colors group-hover:text-signal group-aria-[current=page]:text-signal">
-                      {item.index}
-                    </span>
-                    <span className="link-underline">{item.label}</span>
-                  </TLink>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="flex items-center gap-3" data-nav-item data-intro>
-            <Button to="/contact" className="hidden h-11 sm:inline-flex">
-              Démarrer un projet
-            </Button>
-            <button
-              type="button"
-              className="relative z-[70] flex h-11 items-center gap-3 rounded-[4px] border border-[var(--line-strong)] px-4 lg:hidden"
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              onClick={() => setOpen((v) => !v)}
-            >
-              <span className="t-label">{open ? "Fermer" : "Menu"}</span>
-              <span className="relative block h-2.5 w-4" aria-hidden>
-                <span className={`absolute left-0 h-px w-4 bg-bone transition-transform duration-500 ${open ? "top-1 rotate-45" : "top-0"}`} />
-                <span className={`absolute left-0 h-px w-4 bg-bone transition-transform duration-500 ${open ? "top-1 -rotate-45" : "top-2"}`} />
-              </span>
-            </button>
+          <div className="flex items-center gap-10">
+            <ul className="hidden items-center gap-8 lg:flex">
+              {primaryNav.map((item) => {
+                const active = pathname.startsWith(item.to);
+                return (
+                  <li key={item.to} data-nav-item data-intro>
+                    <TLink
+                      to={item.to}
+                      aria-current={active ? "page" : undefined}
+                      className="link-quiet text-ui text-ink-2 transition-colors duration-300 hover:text-ink aria-[current=page]:text-ink"
+                    >
+                      {item.label}
+                    </TLink>
+                  </li>
+                );
+              })}
+            </ul>
+            <div data-nav-item data-intro className="flex items-center gap-3">
+              <Button to="/contact" className="hidden sm:inline-flex">
+                Démarrer un projet
+              </Button>
+              <button
+                type="button"
+                className="relative z-[70] flex h-12 items-center gap-3 rounded-full px-4 text-ui font-medium shadow-[inset_0_0_0_1px_var(--line-strong)] lg:hidden"
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                onClick={() => setOpen((v) => !v)}
+              >
+                {open ? "Fermer" : "Menu"}
+                <span className="relative block h-2 w-4" aria-hidden>
+                  <span className={`absolute left-0 h-px w-4 bg-ink transition-transform duration-500 ${open ? "top-1 rotate-45" : "top-0"}`} />
+                  <span className={`absolute left-0 h-px w-4 bg-ink transition-transform duration-500 ${open ? "top-1 -rotate-45" : "top-2"}`} />
+                </span>
+              </button>
+            </div>
           </div>
         </nav>
       </header>

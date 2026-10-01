@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { Route } from "./+types/projects";
 import { gsap } from "~/animations/gsap";
-import { CtaBand } from "~/components/layout/CtaBand";
 import { PageHero } from "~/components/layout/PageHero";
 import { PageShell } from "~/components/layout/PageShell";
 import { ExampleBadge } from "~/components/ui/ExampleBadge";
-import { Arrow } from "~/components/ui/Icons";
 import { TLink } from "~/components/ui/TLink";
 import { ProjectVisual } from "~/components/visuals/ProjectVisual";
 import { projects } from "~/content/projects";
@@ -59,21 +57,24 @@ export default function Projects() {
       <PageHero
         index="03"
         label="Projets"
-        title="Des problèmes concrets. Des systèmes qui tiennent."
-        titleClassName="t-h1 max-w-[16ch]"
+        title={
+          <>
+            Des problèmes concrets, des systèmes <span className="accent">qui tiennent.</span>
+          </>
+        }
         lead="Chaque étude de cas suit la même structure : contexte, problème, solution, architecture, résultats. Les projets présentés ici sont des exemples illustratifs."
         meta={<ExampleBadge label="Projets d'exemple — à remplacer" />}
       />
 
-      <section aria-label="Liste des projets" className="shell pb-24 md:pb-36">
-        <div className="t-label hidden grid-cols-[6rem_1fr_14rem_10rem_3rem] gap-6 border-b border-[var(--line)] pb-4 text-smoke md:grid">
-          <span>Réf.</span>
+      <section aria-label="Liste des projets" className="shell pb-[var(--spacing-section)]">
+        <div className="t-small hidden grid-cols-[5rem_1fr_14rem_6rem_3rem] gap-6 border-b border-[var(--line)] pb-4 md:grid">
+          <span>N°</span>
           <span>Projet</span>
           <span>Secteur</span>
           <span>Année</span>
           <span />
         </div>
-        <ul ref={list} className="services-list">
+        <ul ref={list} className="index-list">
           {projects.map((p, i) => (
             <li key={p.slug} className="border-b border-[var(--line)]" data-reveal="fade">
               <TLink
@@ -81,16 +82,19 @@ export default function Projects() {
                 data-cursor="Ouvrir"
                 onPointerEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
-                className="service-row group grid gap-4 py-8 md:grid-cols-[6rem_1fr_14rem_10rem_3rem] md:items-center md:gap-6 md:py-10"
+                className="index-row group grid gap-4 py-8 md:grid-cols-[5rem_1fr_14rem_6rem_3rem] md:items-center md:gap-6 md:py-10"
               >
-                <span className="t-label text-signal">{p.index}</span>
-                <span className="service-name t-display text-[clamp(1.8rem,3.8vw,3.6rem)] leading-none">{p.title}</span>
-                <span className="t-body text-[0.95rem]">{p.sector}</span>
-                <span className="t-mono text-ash">{p.year}</span>
-                <span className="hidden h-10 w-10 items-center justify-center rounded-[4px] border border-[var(--line)] transition-colors duration-500 group-hover:border-signal group-hover:bg-signal group-hover:text-ink md:flex">
-                  <Arrow />
+                <span className="t-num">{p.index.replace("P.", "")}</span>
+                <span className="index-name t-index">{p.title}</span>
+                <span className="t-small">{p.sector}</span>
+                <span className="t-small">{p.year}</span>
+                <span
+                  aria-hidden
+                  className="hidden h-10 w-10 place-items-center rounded-full shadow-[inset_0_0_0_1px_var(--line-strong)] transition-colors duration-500 group-hover:bg-amber group-hover:shadow-none md:grid"
+                >
+                  →
                 </span>
-                <span className="mt-2 block overflow-hidden rounded-[6px] border border-[var(--line)] md:hidden">
+                <span className="mt-2 block overflow-hidden rounded-[1rem] bg-white shadow-[0_0_0_1px_var(--line)] md:hidden">
                   <ProjectVisual kind={p.visual} className="w-full" />
                 </span>
               </TLink>
@@ -102,13 +106,11 @@ export default function Projects() {
       <div
         ref={preview}
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-40 hidden w-[25rem] overflow-hidden rounded-[6px] border border-[var(--line-strong)] opacity-0 md:block"
+        className="pointer-events-none fixed left-0 top-0 z-40 hidden w-[26rem] overflow-hidden rounded-[1.25rem] bg-white opacity-0 shadow-[0_30px_60px_-30px_rgb(21_23_28/0.35),0_0_0_1px_var(--line)] md:block"
         style={{ visibility: "hidden" }}
       >
         <ProjectVisual key={projects[active].slug} kind={projects[active].visual} className="w-full" />
       </div>
-
-      <CtaBand />
     </PageShell>
   );
 }

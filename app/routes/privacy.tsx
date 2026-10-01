@@ -17,7 +17,7 @@ export default function Privacy() {
           title: "Responsable du traitement",
           body: (
             <p>
-              {site.name}, <Todo>adresse</Todo>. Contact : <a href={`mailto:${site.email}`} className="link-underline text-bone">{site.email}</a>.
+              {site.name}, <Todo>adresse</Todo>. Contact : <a href={`mailto:${site.email}`} className="link-underline text-ink">{site.email}</a>.
             </p>
           ),
         },
@@ -52,7 +52,7 @@ export default function Privacy() {
           body: (
             <p>
               Vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition, de limitation et de portabilité.
-              Pour l'exercer : <a href={`mailto:${site.email}`} className="link-underline text-bone">{site.email}</a>. Vous pouvez
+              Pour l'exercer : <a href={`mailto:${site.email}`} className="link-underline text-ink">{site.email}</a>. Vous pouvez
               également introduire une réclamation auprès de l'autorité de protection des données compétente.
             </p>
           ),

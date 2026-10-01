@@ -13,8 +13,8 @@ function Choice({ type, name, value, checked, onChange }: { type: "radio" | "che
   return (
     <label className="group relative cursor-pointer">
       <input type={type} name={name} value={value} checked={checked} onChange={onChange} className="peer sr-only" />
-      <span className="flex items-center gap-3 rounded-[5px] border border-[var(--line-strong)] px-4 py-3.5 text-[1rem] text-ash transition-all duration-300 group-hover:border-bone/40 group-hover:text-bone peer-checked:border-signal peer-checked:bg-signal/10 peer-checked:text-bone peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal">
-        <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] border transition-colors ${checked ? "border-signal bg-signal text-ink" : "border-[var(--line-strong)]"}`}>
+      <span className="flex items-center gap-3 rounded-full bg-white px-5 py-3.5 text-body text-ink-2 shadow-[0_0_0_1px_var(--line)] transition-all duration-300 group-hover:text-ink group-hover:shadow-[0_0_0_1px_var(--line-strong)] peer-checked:bg-ink peer-checked:text-paper peer-checked:shadow-none peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink">
+        <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition-colors ${checked ? "bg-amber text-ink" : "shadow-[inset_0_0_0_1px_var(--line-strong)]"}`}>
           {checked && <Check className="h-2.5 w-2.5" />}
         </span>
         {value}
@@ -26,15 +26,15 @@ function Choice({ type, name, value, checked, onChange }: { type: "radio" | "che
 function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="block">
-      <span className="t-label text-ash">{label}</span>
+      <span className="t-small">{label}</span>
       {children}
-      {hint && <span className="mt-2 block text-[0.8125rem] text-smoke">{hint}</span>}
+      {hint && <span className="mt-2 block text-caption text-ink-3">{hint}</span>}
     </label>
   );
 }
 
 const inputCls =
-  "mt-3 block w-full border-0 border-b border-[var(--line-strong)] bg-transparent px-0 py-3 text-[1.25rem] text-bone placeholder:text-smoke transition-colors focus:border-signal focus:outline-none";
+  "mt-3 block w-full border-0 border-b border-[var(--line-strong)] bg-transparent px-0 py-3 text-xl text-ink placeholder:text-ink-3 transition-colors focus:border-ink focus:outline-none";
 
 /**
  * Brief de projet guidé en six étapes. Le visiteur répond à des questions
@@ -96,13 +96,13 @@ export function ProjectBrief() {
     return (
       <div className="grid gap-12 lg:grid-cols-12">
         <div ref={stage} className="lg:col-span-7" aria-live="polite">
-          <p className="t-label text-signal">Brief {reference}</p>
-          <h2 ref={heading} tabIndex={-1} className="t-display t-h2 mt-6 outline-none">
+          <p className="t-eyebrow">Brief {reference}</p>
+          <h2 ref={heading} tabIndex={-1} className="t-display-m mt-6 outline-none">
             Votre brief est prêt.
           </h2>
-          <p className="t-lead mt-6 max-w-[34rem] text-ash">
+          <p className="t-lead mt-6 max-w-[34rem]">
             Votre messagerie s'est ouverte avec le brief pré-rempli : il ne reste qu'à l'envoyer. Si rien ne s'est ouvert,
-            copiez le brief et envoyez-le à <span className="text-bone">{site.email}</span>.
+            copiez le brief et envoyez-le à <span className="text-ink">{site.email}</span>.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Button onClick={copy}>{copied ? "Brief copié" : "Copier le brief"}</Button>
@@ -110,7 +110,7 @@ export function ProjectBrief() {
               Rouvrir la messagerie
             </Button>
           </div>
-          <TLink to="/" className="t-label link-underline mt-10 inline-block text-ash">
+          <TLink to="/" className="t-small link-underline mt-10 inline-block">
             Retour à l'accueil
           </TLink>
         </div>
@@ -125,18 +125,18 @@ export function ProjectBrief() {
     <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
       <form onSubmit={next} className="lg:col-span-7" noValidate aria-describedby="brief-hint">
         <div className="flex items-center gap-4">
-          <span className="t-label text-signal">
+          <span className="t-eyebrow">
             Étape {String(step + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
           </span>
           <span className="relative h-px flex-1 bg-[var(--line)]" aria-hidden>
-            <span className="absolute inset-y-0 left-0 bg-signal transition-[width] duration-700 ease-[var(--ease-out-expo)]" style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
+            <span className="absolute inset-y-0 left-0 bg-ink transition-[width] duration-700 ease-[var(--ease-out-expo)]" style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
           </span>
         </div>
 
         <div ref={stage} className="mt-10 min-h-[26rem]">
           <fieldset>
             <legend className="contents">
-              <h2 ref={heading} tabIndex={-1} className="t-display t-h2 max-w-[16ch] outline-none">
+              <h2 ref={heading} tabIndex={-1} className="t-display-m max-w-[16ch] outline-none">
                 {current.title}
               </h2>
             </legend>
@@ -166,7 +166,7 @@ export function ProjectBrief() {
                     value={brief.description}
                     onChange={(e) => set("description", e.target.value)}
                     placeholder="Ex. : nous souhaitons remplacer notre outil de planification par une application web connectée à notre ERP…"
-                    className={`${inputCls} resize-none text-[1.125rem] leading-relaxed`}
+                    className={`${inputCls} resize-none leading-relaxed`}
                     required
                   />
                 </Field>
@@ -186,10 +186,10 @@ export function ProjectBrief() {
                     <input className={inputCls} type="tel" autoComplete="tel" value={brief.phone} onChange={(e) => set("phone", e.target.value)} />
                   </Field>
                   <label className="flex cursor-pointer items-start gap-3 sm:col-span-2">
-                    <input type="checkbox" checked={brief.consent} onChange={(e) => set("consent", e.target.checked)} className="mt-1 h-4 w-4 accent-[var(--color-signal)]" required />
-                    <span className="t-body text-[0.9rem]">
+                    <input type="checkbox" checked={brief.consent} onChange={(e) => set("consent", e.target.checked)} className="mt-1 h-4 w-4 accent-[var(--color-ink)]" required />
+                    <span className="t-small">
                       J'accepte que ces informations soient utilisées pour répondre à ma demande, conformément à la{" "}
-                      <TLink to="/confidentialite" className="text-bone underline decoration-[var(--line-strong)] underline-offset-4">
+                      <TLink to="/confidentialite" className="text-ink underline decoration-[var(--line-strong)] underline-offset-4">
                         politique de confidentialité
                       </TLink>
                       . *
@@ -206,7 +206,7 @@ export function ProjectBrief() {
             type="button"
             onClick={() => setStep((s) => Math.max(0, s - 1))}
             disabled={step === 0}
-            className="t-label link-underline text-ash transition-colors hover:text-bone disabled:pointer-events-none disabled:opacity-30"
+            className="link-quiet text-ui text-ink-2 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-30"
           >
             ← Retour
           </button>
@@ -219,9 +219,9 @@ export function ProjectBrief() {
       <div className="lg:col-span-4 lg:col-start-9">
         <div className="lg:sticky lg:top-[calc(var(--nav-h)+2rem)]">
           <BriefSpec brief={brief} reference={reference} step={step} total={steps.length} />
-          <p className="t-body mt-6 text-[0.875rem]">
+          <p className="t-small mt-6">
             Vous préférez écrire directement ?{" "}
-            <a href={`mailto:${site.email}`} className="link-underline text-bone">
+            <a href={`mailto:${site.email}`} className="link-underline text-ink">
               {site.email}
             </a>
           </p>

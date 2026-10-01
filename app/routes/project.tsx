@@ -1,10 +1,9 @@
 import { data } from "react-router";
 import type { Route } from "./+types/project";
-import { CtaBand } from "~/components/layout/CtaBand";
 import { PageHero } from "~/components/layout/PageHero";
 import { PageShell } from "~/components/layout/PageShell";
+import { Eyebrow } from "~/components/ui/Eyebrow";
 import { ExampleBadge } from "~/components/ui/ExampleBadge";
-import { SectionMarker } from "~/components/ui/SectionMarker";
 import { TLink } from "~/components/ui/TLink";
 import { ProjectVisual } from "~/components/visuals/ProjectVisual";
 import { getProject, projects } from "~/content/projects";
@@ -26,91 +25,89 @@ export const meta: Route.MetaFunction = ({ params }) => {
 export default function ProjectPage({ loaderData }: Route.ComponentProps) {
   const p = getProject(loaderData.slug)!;
   const next = projects[(projects.indexOf(p) + 1) % projects.length];
-
   const story = [
-    { k: "01", label: "Contexte", text: p.context },
-    { k: "02", label: "Problème", text: p.problem },
-    { k: "03", label: "Solution", text: p.solution },
+    { k: "A", label: "Contexte", text: p.context },
+    { k: "B", label: "Problème", text: p.problem },
+    { k: "C", label: "Solution", text: p.solution },
   ];
 
   return (
     <PageShell>
       <PageHero
-        index={`03.${p.index.slice(2)}`}
+        index={p.index.replace("P.", "")}
         label="Étude de cas"
         title={p.title}
-        titleClassName="t-h1 max-w-[15ch]"
         lead={p.summary}
         meta={
-          <dl className="grid max-w-3xl grid-cols-2 gap-x-8 gap-y-5 border-t border-[var(--line)] pt-6 md:grid-cols-4">
-            {[
-              ["Client", p.client],
-              ["Secteur", p.sector],
-              ["Année", p.year],
-              ["Périmètre", p.services.join(", ")],
-            ].map(([k, v]) => (
-              <div key={k}>
-                <dt className="t-label text-smoke">{k}</dt>
-                <dd className="mt-2 text-[0.95rem] text-bone">{v}</dd>
-              </div>
-            ))}
-          </dl>
-        }
-        aside={
-          <p className="t-body flex flex-col items-start gap-3 text-[0.875rem]">
-            <ExampleBadge label="Étude de cas fictive" />
-            Contenu d'exemple destiné à illustrer la structure d'une étude de cas. À remplacer par un projet réel.
-          </p>
+          <div className="flex flex-col gap-8">
+            <ExampleBadge label="Étude de cas fictive — à remplacer" />
+            <dl className="grid max-w-3xl grid-cols-2 gap-x-8 gap-y-6 border-t border-[var(--line)] pt-6 md:grid-cols-4">
+              {[
+                ["Client", p.client],
+                ["Secteur", p.sector],
+                ["Année", p.year],
+                ["Périmètre", p.services.join(", ")],
+              ].map(([k, v]) => (
+                <div key={k}>
+                  <dt className="t-small">{k}</dt>
+                  <dd className="mt-1 text-ui font-medium">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         }
       />
 
       <div className="shell">
-        <div className="overflow-hidden rounded-[6px] border border-[var(--line)]" data-reveal="scan">
-          <div data-parallax="0.06" className="scale-[1.12]">
-            <ProjectVisual kind={p.visual} className="w-full" />
+        <figure>
+          <div className="overflow-hidden rounded-[1.5rem] bg-white shadow-[0_0_0_1px_var(--line)]" data-reveal="mask">
+            <div data-parallax="0.05">
+              <ProjectVisual kind={p.visual} className="w-full scale-[1.08]" />
+            </div>
           </div>
-        </div>
-        <p className="t-label mt-4 text-smoke">Fig. 01 — Visuel schématique provisoire</p>
+          <figcaption className="t-small mt-4">Visuel schématique provisoire — à remplacer par des captures du projet.</figcaption>
+        </figure>
       </div>
 
-      <section aria-label="Récit du projet" className="shell py-24 md:py-36">
-        {story.map((s) => (
-          <div key={s.k} className="grid gap-6 border-t border-[var(--line)] py-12 lg:grid-cols-12 lg:py-16">
-            <p className="t-label flex gap-3 lg:col-span-3" data-reveal="fade">
-              <span className="text-signal">{s.k}</span>
-              <span className="text-ash">{s.label}</span>
-            </p>
-            <h2 className="sr-only">{s.label}</h2>
-            <p data-reveal="lines" className="t-statement text-[clamp(1.5rem,2.6vw,2.6rem)] lg:col-span-9">
-              {s.text}
-            </p>
+      <section aria-label="Récit du projet" className="section">
+        <div className="shell">
+          {story.map((s) => (
+            <div key={s.k} className="grid gap-6 border-t border-[var(--line)] py-12 lg:grid-cols-12 lg:py-16">
+              <div className="lg:col-span-3">
+                <Eyebrow index={s.k}>{s.label}</Eyebrow>
+              </div>
+              <h2 className="sr-only">{s.label}</h2>
+              <p data-reveal="lines" className="t-statement lg:col-span-9">
+                {s.text}
+              </p>
+            </div>
+          ))}
+          <div className="grid gap-6 border-t border-[var(--line)] pt-12 lg:grid-cols-12">
+            <div className="lg:col-span-3">
+              <Eyebrow index="D">Points clés</Eyebrow>
+            </div>
+            <ol className="grid gap-x-12 sm:grid-cols-2 lg:col-span-9" data-reveal="stagger">
+              {p.solutionPoints.map((pt, k) => (
+                <li key={pt} className="flex gap-5 border-b border-[var(--line)] py-6">
+                  <span className="t-num">{String(k + 1).padStart(2, "0")}</span>
+                  <span className="text-body">{pt}</span>
+                </li>
+              ))}
+            </ol>
           </div>
-        ))}
-        <div className="grid gap-6 border-t border-[var(--line)] pt-12 lg:grid-cols-12">
-          <p className="t-label text-ash lg:col-span-3" data-reveal="fade">
-            Points clés
-          </p>
-          <ul className="grid gap-px overflow-hidden rounded-[6px] border border-[var(--line)] bg-[var(--line)] sm:grid-cols-2 lg:col-span-9" data-reveal="fade">
-            {p.solutionPoints.map((pt, k) => (
-              <li key={pt} className="flex gap-4 bg-ink p-6">
-                <span className="t-label text-signal">{String(k + 1).padStart(2, "0")}</span>
-                <span className="text-bone">{pt}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
-      <section aria-labelledby="archi-title" className="border-t border-[var(--line)] bg-graphite py-24 md:py-32">
+      <section aria-labelledby="archi-title" className="section bg-white">
         <div className="shell">
-          <SectionMarker index="A" label="Architecture" />
-          <h2 id="archi-title" data-reveal="lines" className="t-display t-h2 mt-8">
-            Vue d'ensemble du système
+          <Eyebrow index="E">Architecture</Eyebrow>
+          <h2 id="archi-title" data-reveal="lines" className="t-display-m mt-8">
+            Vue d'ensemble <span className="accent">du</span> système
           </h2>
           <ArchitectureFlow nodes={p.architecture} />
           <ul className="mt-14 flex flex-wrap gap-2" data-reveal="stagger">
             {p.stack.map((t) => (
-              <li key={t} className="t-mono rounded-[3px] border border-[var(--line)] px-3 py-2 text-ash">
+              <li key={t} className="rounded-full bg-paper px-4 py-2 text-ui text-ink-2">
                 {t}
               </li>
             ))}
@@ -118,37 +115,38 @@ export default function ProjectPage({ loaderData }: Route.ComponentProps) {
         </div>
       </section>
 
-      <section aria-labelledby="results-title" className="shell py-24 md:py-36">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <SectionMarker index="B" label="Résultats" className="flex-1" />
-          <ExampleBadge label="Chiffres d'exemple" />
+      <section aria-labelledby="results-title" className="section">
+        <div className="shell">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <Eyebrow index="F">Résultats</Eyebrow>
+            <ExampleBadge label="Chiffres d'exemple" />
+          </div>
+          <h2 id="results-title" className="sr-only">
+            Résultats
+          </h2>
+          <dl className="mt-12 grid border-t border-[var(--line)] md:grid-cols-3" data-reveal="stagger">
+            {p.results.map((r) => (
+              <div key={r.label} className="border-b border-[var(--line)] py-10 md:border-b-0 md:border-r md:px-10 md:first:pl-0 md:last:border-r-0">
+                <dt className="sr-only">{r.label}</dt>
+                <dd>
+                  <span className="t-figure block">{r.value}</span>
+                  <span className="t-body mt-4 block max-w-[18rem]">{r.label}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <h2 id="results-title" className="sr-only">
-          Résultats
-        </h2>
-        <dl className="mt-12 grid border-t border-[var(--line)] md:grid-cols-3" data-reveal="stagger">
-          {p.results.map((r) => (
-            <div key={r.label} className="border-b border-[var(--line)] py-10 md:border-b-0 md:border-r md:px-8 md:first:pl-0 md:last:border-r-0">
-              <dt className="sr-only">{r.label}</dt>
-              <dd>
-                <span className="t-display block text-[clamp(3rem,6vw,5.5rem)] leading-none">{r.value}</span>
-                <span className="t-body mt-4 block max-w-[18rem]">{r.label}</span>
-              </dd>
-            </div>
-          ))}
-        </dl>
       </section>
 
-      <section aria-label="Galerie" className="shell pb-24 md:pb-36">
+      <section aria-label="Galerie" className="shell pb-[var(--spacing-section)]">
         <div className="grid gap-4 md:grid-cols-2">
           {["Capture d'écran", "Démonstration vidéo"].map((label) => (
             <div
               key={label}
-              className="flex aspect-[16/10] flex-col items-center justify-center gap-3 rounded-[6px] border border-dashed border-[var(--line-strong)] bg-graphite"
+              className="flex aspect-[16/10] items-center justify-center rounded-[1.25rem] bg-stone"
               data-reveal="fade"
             >
-              <span className="h-[7px] w-[7px] rounded-[1.5px] bg-signal" aria-hidden />
-              <span className="t-label text-ash">{label} — emplacement réservé</span>
+              <span className="placeholder-tag">{label} — emplacement réservé</span>
             </div>
           ))}
         </div>
@@ -156,16 +154,17 @@ export default function ProjectPage({ loaderData }: Route.ComponentProps) {
 
       <nav aria-label="Projet suivant" className="border-t border-[var(--line)]">
         <TLink to={`/projets/${next.slug}`} data-cursor="Suivant" className="group block">
-          <div className="shell py-16 md:py-24">
-            <span className="t-label text-smoke">Projet suivant — {next.index}</span>
-            <span className="t-display mt-4 block text-[clamp(2.4rem,7vw,7rem)] leading-[0.95] transition-colors duration-500 group-hover:text-signal">
-              {next.title}
+          <div className="shell flex items-end justify-between gap-8 py-[var(--spacing-section-sm)]">
+            <span>
+              <span className="t-eyebrow">Projet suivant</span>
+              <span className="t-display-l mt-4 block transition-transform duration-700 group-hover:translate-x-3">{next.title}</span>
+            </span>
+            <span aria-hidden className="t-display-m text-ink-3 transition-colors duration-500 group-hover:text-ink">
+              →
             </span>
           </div>
         </TLink>
       </nav>
-
-      <CtaBand />
     </PageShell>
   );
 }

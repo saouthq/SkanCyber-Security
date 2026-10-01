@@ -36,12 +36,12 @@ export function SystemMap() {
   return (
     <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
       {/* Carte (tablette et desktop) */}
-      <div className="relative hidden md:block lg:col-span-8" data-reveal="scan">
+      <div className="relative hidden md:block lg:col-span-8" data-reveal="fade">
         <div className="relative" style={{ aspectRatio: `${W} / ${H + 40}` }}>
           <svg viewBox={`0 0 ${W} ${H + 40}`} className="absolute inset-0 h-full w-full" aria-hidden>
             <defs>
               <pattern id="map-dots" width="25" height="25" patternUnits="userSpaceOnUse">
-                <rect x="12" y="12" width="1.5" height="1.5" fill="var(--color-bone)" fillOpacity="0.14" />
+                <rect x="12" y="12" width="1.5" height="1.5" rx="0.75" fill="var(--color-ink)" fillOpacity="0.12" />
               </pattern>
             </defs>
             <rect width={W} height={H + 40} fill="url(#map-dots)" />
@@ -54,18 +54,18 @@ export function SystemMap() {
               rx="10"
               fill="none"
               strokeDasharray={focus === "security" ? "0" : "6 8"}
-              stroke={focus === "security" ? "var(--color-signal)" : "var(--color-bone)"}
-              strokeOpacity={focus === "security" ? 1 : 0.25}
+              stroke={focus === "security" ? "var(--color-amber)" : "var(--color-ink)"}
+              strokeOpacity={focus === "security" ? 1 : 0.2}
               className="transition-all duration-700"
             />
             {/* Rangées de couches */}
             {[
-              [110, "INTERFACE"],
-              [270, "LOGIQUE"],
-              [400, "DONNÉES"],
-              [530, "FONDATIONS"],
+              [110, "Interface"],
+              [270, "Logique"],
+              [400, "Données"],
+              [530, "Fondations"],
             ].map(([y, l]) => (
-              <text key={l} x="40" y={Number(y) - 44} fill="var(--color-bone)" fillOpacity="0.3" fontFamily="var(--font-mono)" fontSize="11" letterSpacing="2">
+              <text key={l} x="40" y={Number(y) - 44} fill="var(--color-ink)" fillOpacity="0.4" fontFamily="var(--font-sans)" fontSize="13" letterSpacing="0.2">
                 {l}
               </text>
             ))}
@@ -80,8 +80,8 @@ export function SystemMap() {
                   y1={A.y}
                   x2={B.x}
                   y2={B.y}
-                  stroke={on ? "var(--color-signal)" : "var(--color-bone)"}
-                  strokeOpacity={on ? 0.9 : focus === "security" ? 0.35 : 0.12}
+                  stroke={on ? "var(--color-ink)" : "var(--color-ink)"}
+                  strokeOpacity={on ? 0.85 : focus === "security" ? 0.3 : 0.12}
                   strokeWidth={on ? 1.5 : 1}
                   className={`transition-all duration-500 ${on ? "map-flow" : ""}`}
                 />
@@ -104,17 +104,16 @@ export function SystemMap() {
                   onFocus={() => setHover(d.id)}
                   onBlur={() => setHover(null)}
                   aria-pressed={isActive}
-                  className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-2.5 rounded-[5px] border px-3.5 py-2.5 transition-all duration-500 ${
+                  className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-2.5 rounded-full px-4 py-2.5 text-ui transition-all duration-500 ${
                     isActive
-                      ? "border-signal bg-signal text-ink"
+                      ? "bg-ink text-paper"
                       : lit
-                        ? "border-[var(--line-strong)] bg-carbon text-bone"
-                        : "border-[var(--line)] bg-ink text-smoke"
+                        ? "bg-white text-ink shadow-[0_0_0_1px_var(--line-strong)]"
+                        : "bg-paper text-ink-3 shadow-[0_0_0_1px_var(--line)]"
                   }`}
                   style={{ left: `${(d.x / W) * 100}%`, top: `${(d.y / (H + 40)) * 100}%` }}
                 >
-                  <span className={`t-label ${isActive ? "text-ink" : "text-signal"}`}>{d.code}</span>
-                  <span className="text-[0.9375rem] leading-none">{d.name}</span>
+                  <span className="leading-none">{d.name}</span>
                 </button>
               );
             })}
@@ -127,12 +126,12 @@ export function SystemMap() {
             onFocus={() => setHover("security")}
             onBlur={() => setHover(null)}
             aria-pressed={active === "security"}
-            className={`t-label absolute -translate-x-1/2 -translate-y-1/2 rounded-[4px] border px-3 py-2 transition-all duration-500 ${
-              active === "security" ? "border-signal bg-signal text-ink" : "border-signal/60 bg-ink text-signal"
+            className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full px-4 py-2.5 text-ui font-medium transition-all duration-500 ${
+              active === "security" ? "bg-amber text-ink" : "bg-paper text-amber-ink shadow-[0_0_0_1px_var(--color-amber)]"
             }`}
             style={{ left: "50%", top: `${((H - 10) / (H + 40)) * 100}%` }}
           >
-            SC — Sécurité · périmètre
+            Sécurité — elle entoure tout
           </button>
         </div>
       </div>
@@ -146,9 +145,9 @@ export function SystemMap() {
               type="button"
               onClick={() => select(d.id)}
               aria-pressed={active === d.id}
-              className={`t-label rounded-[4px] border px-3 py-2.5 ${active === d.id ? "border-signal bg-signal text-ink" : "border-[var(--line)] text-ash"}`}
+              className={`rounded-full px-4 py-2.5 text-ui ${active === d.id ? "bg-ink text-paper" : "text-ink-2 shadow-[0_0_0_1px_var(--line-strong)]"}`}
             >
-              {d.code} · {d.name}
+              {d.name}
             </button>
           ))}
         </div>
@@ -156,34 +155,31 @@ export function SystemMap() {
 
       {/* Panneau de détail */}
       <div ref={panel} className="lg:col-span-4" aria-live="polite">
-        <div className="rounded-[6px] border border-[var(--line)] bg-graphite p-7 md:p-8">
-          <p data-panel-item className="t-label flex justify-between text-smoke">
-            <span className="text-signal">{domain.code}</span>
-            <span>Domaine</span>
-          </p>
-          <h3 data-panel-item className="t-display mt-8 text-[clamp(2rem,3.2vw,3rem)] leading-none">
+        <div className="rounded-[1.25rem] bg-white p-7 shadow-[0_0_0_1px_var(--line)] md:p-9">
+          <p data-panel-item className="t-eyebrow">Domaine</p>
+          <h3 data-panel-item className="t-display-m mt-4">
             {domain.name}
           </h3>
           <p data-panel-item className="t-body mt-5">
             {domain.text}
           </p>
-          <p data-panel-item className="t-label mt-8 text-smoke">
+          <p data-panel-item className="t-eyebrow mt-8">
             Pratiques
           </p>
           <ul className="mt-3 border-t border-[var(--line)]">
             {domain.practices.map((p) => (
-              <li key={p} data-panel-item className="flex items-center gap-3 border-b border-[var(--line)] py-3 text-[0.95rem] text-bone">
-                <span className="h-[5px] w-[5px] rounded-[1px] bg-signal" aria-hidden />
+              <li key={p} data-panel-item className="flex items-center gap-3 border-b border-[var(--line)] py-3 text-ui">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber" aria-hidden />
                 {p}
               </li>
             ))}
           </ul>
-          <p data-panel-item className="t-label mt-8 text-smoke">
+          <p data-panel-item className="t-eyebrow mt-8">
             Technologies
           </p>
           <ul className="mt-3 flex flex-wrap gap-2">
             {domain.tech.map((t) => (
-              <li key={t} data-panel-item className="t-mono rounded-[3px] border border-[var(--line)] px-2.5 py-1.5 text-[0.75rem] text-ash">
+              <li key={t} data-panel-item className="rounded-full bg-paper px-3 py-1.5 text-caption text-ink-2">
                 {t}
               </li>
             ))}

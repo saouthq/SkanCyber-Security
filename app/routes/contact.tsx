@@ -17,11 +17,14 @@ export default function Contact() {
       <PageHero
         index="06"
         label="Contact"
-        title="Démarrons par votre système."
-        titleClassName="t-h1 max-w-[14ch]"
+        title={
+          <>
+            Parlez-nous de <span className="accent">votre</span> projet.
+          </>
+        }
         lead="Six questions, deux minutes. Votre réponse prend la forme d'un premier cahier des charges, que nous étudions avant de vous recontacter."
       />
-      <section aria-label="Brief de projet" className="shell border-t border-[var(--line)] pb-28 pt-16 md:pb-40 md:pt-20">
+      <section aria-label="Brief de projet" className="shell border-t border-[var(--line)] pb-[var(--spacing-section)] pt-16 md:pt-20">
         <ProjectBrief />
       </section>
     </PageShell>

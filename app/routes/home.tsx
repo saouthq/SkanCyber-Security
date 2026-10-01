@@ -1,30 +1,30 @@
 import type { Route } from "./+types/home";
 import { PageShell } from "~/components/layout/PageShell";
 import { seo } from "~/lib/seo";
-import { ClosingCta } from "~/sections/home/ClosingCta";
-import { CyberTeaser } from "~/sections/home/CyberTeaser";
+import { Manifesto } from "~/sections/home/Manifesto";
 import { Method } from "~/sections/home/Method";
+import { Hero } from "~/sections/home/Hero";
+import { Pillars } from "~/sections/home/Pillars";
 import { SelectedWork } from "~/sections/home/SelectedWork";
 import { ServicesIndex } from "~/sections/home/ServicesIndex";
-import { SystemStory } from "~/sections/home/SystemStory";
 
 export const meta: Route.MetaFunction = () =>
   seo({
-    title: "SkanCyber Security — Ingénierie logicielle & cybersécurité",
+    title: "SkanCyber Security — Cybersécurité & ingénierie logicielle",
     description:
-      "Nous concevons, développons et sécurisons des logiciels sur mesure : applications web, mobiles, desktop, SaaS, automatisation, architecture et cybersécurité.",
+      "SkanCyber conçoit, développe et sécurise les systèmes numériques dont votre activité dépend : cybersécurité, logiciels sur mesure, web, mobile, desktop, SaaS, infrastructure.",
     path: "/",
   });
 
 export default function Home() {
   return (
     <PageShell>
-      <SystemStory />
+      <Hero />
+      <Pillars />
+      <Manifesto />
       <ServicesIndex />
       <SelectedWork />
       <Method />
-      <CyberTeaser />
-      <ClosingCta />
     </PageShell>
   );
 }

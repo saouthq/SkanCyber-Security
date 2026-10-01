@@ -3,15 +3,19 @@ import { useScrollReveals } from "~/hooks/useScrollReveals";
 import { legalNav, primaryNav, site } from "~/content/site";
 import { services } from "~/content/services";
 import { getLenis } from "~/lib/lenis";
-import { LocalTime } from "~/components/ui/LocalTime";
-import { LogoSymbol } from "~/components/ui/Logo";
-import { WORDMARK } from "~/components/ui/logo-paths";
+import { Button } from "~/components/ui/Button";
+import { Magnetic } from "~/components/ui/Magnetic";
 import { TLink } from "~/components/ui/TLink";
-import { ArrowDown } from "~/components/ui/Icons";
+import { WORDMARK } from "~/components/ui/logo-paths";
 
+/**
+ * Pied de page = dernier chapitre de chaque page : la « nuit ».
+ * Un appel monumental, le plan du site, puis le logotype en filigrane.
+ */
 export function Footer() {
   const ref = useRef<HTMLElement>(null);
   useScrollReveals(ref);
+
   const toTop = () => {
     const lenis = getLenis();
     if (lenis) lenis.scrollTo(0, { duration: 1.6 });
@@ -19,81 +23,89 @@ export function Footer() {
   };
 
   return (
-    <footer ref={ref} className="relative overflow-hidden border-t border-[var(--line)] bg-ink pt-20 md:pt-28" aria-labelledby="footer-title">
-      <h2 id="footer-title" className="sr-only">
-        Pied de page
-      </h2>
-      <div className="shell grid gap-14 md:grid-cols-12 md:gap-8">
-        <div className="md:col-span-5">
-          <LogoSymbol className="h-12 w-auto" />
-          <p className="t-lead mt-8 max-w-sm text-ash">
-            Ingénierie logicielle et cybersécurité. Nous concevons des systèmes, puis nous les défendons.
-          </p>
+    <footer ref={ref} className="on-dark relative overflow-hidden bg-graphite" aria-labelledby="footer-title">
+      <div className="shell pb-16 pt-[var(--spacing-section)]">
+        <p className="t-eyebrow" data-reveal="fade">
+          Un projet, un audit, une question technique
+        </p>
+        <h2 id="footer-title" className="mt-6">
+          <Magnetic strength={0.08} className="block">
+            <TLink to="/contact" data-cursor="Écrire" className="group block w-fit">
+              <span data-reveal="lines" className="t-display-xl block">
+                Parlons de votre <span className="accent text-amber">projet.</span>
+              </span>
+            </TLink>
+          </Magnetic>
+        </h2>
+        <div className="mt-12 flex flex-wrap items-center gap-6" data-reveal="fade">
+          <Button to="/contact">Démarrer un projet</Button>
+          <a href={`mailto:${site.email}`} className="link-underline text-body">
+            {site.email}
+          </a>
         </div>
 
-        <nav className="md:col-span-2" aria-label="Plan du site">
-          <p className="t-label mb-5 text-smoke">Index</p>
-          <ul className="space-y-2.5">
-            {primaryNav.map((n) => (
+        <div className="mt-[var(--spacing-section-sm)] grid gap-12 border-t border-[var(--line-inverse)] pt-12 sm:grid-cols-2 lg:grid-cols-12">
+          <nav className="lg:col-span-3" aria-label="Plan du site">
+            <p className="t-small mb-5 text-mist">Studio</p>
+            <ul className="space-y-2.5">
+              {primaryNav.map((n) => (
+                <li key={n.to}>
+                  <TLink to={n.to} className="link-quiet">
+                    {n.label}
+                  </TLink>
+                </li>
+              ))}
+              <li>
+                <TLink to="/contact" className="link-quiet">
+                  Contact
+                </TLink>
+              </li>
+            </ul>
+          </nav>
+          <nav className="lg:col-span-4" aria-label="Services">
+            <p className="t-small mb-5 text-mist">Services</p>
+            <ul className="space-y-2.5">
+              {services.map((s) => (
+                <li key={s.slug}>
+                  <TLink to={`/services/${s.slug}`} className="link-quiet">
+                    {s.name}
+                  </TLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div className="lg:col-span-4 lg:col-start-9">
+            <p className="t-small mb-5 text-mist">SkanCyber Security</p>
+            <p className="max-w-xs text-mist">
+              Cybersécurité, ingénierie logicielle et infrastructure. Nous concevons, construisons et protégeons.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-16 flex flex-col-reverse gap-6 text-sm text-mist md:flex-row md:items-center md:justify-between">
+          <p>
+            © {new Date().getFullYear()} {site.name}
+          </p>
+          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            {legalNav.map((n) => (
               <li key={n.to}>
-                <TLink to={n.to} className="link-underline text-ash transition-colors hover:text-bone">
+                <TLink to={n.to} className="link-quiet">
                   {n.label}
                 </TLink>
               </li>
             ))}
             <li>
-              <TLink to="/contact" className="link-underline text-ash transition-colors hover:text-bone">
-                Contact
-              </TLink>
+              <button type="button" onClick={toTop} className="link-quiet">
+                Haut de page ↑
+              </button>
             </li>
           </ul>
-        </nav>
-
-        <nav className="md:col-span-3" aria-label="Services">
-          <p className="t-label mb-5 text-smoke">Services</p>
-          <ul className="space-y-2.5">
-            {services.map((s) => (
-              <li key={s.slug}>
-                <TLink to={`/services/${s.slug}`} className="link-underline text-ash transition-colors hover:text-bone">
-                  {s.name}
-                </TLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="md:col-span-2">
-          <p className="t-label mb-5 text-smoke">Contact</p>
-          <a href={`mailto:${site.email}`} className="link-underline break-all text-bone">
-            {site.email}
-          </a>
-          <p className="t-mono mt-6 text-smoke">
-            Heure locale <LocalTime className="text-ash" />
-          </p>
         </div>
       </div>
 
-      <div className="shell mt-20 flex flex-col-reverse gap-6 border-t border-[var(--line)] py-6 md:flex-row md:items-center md:justify-between">
-        <p className="t-label text-smoke">© {new Date().getFullYear()} {site.name}</p>
-        <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          {legalNav.map((n) => (
-            <li key={n.to}>
-              <TLink to={n.to} className="t-label text-smoke transition-colors hover:text-bone">
-                {n.label}
-              </TLink>
-            </li>
-          ))}
-          <li>
-            <button type="button" onClick={toTop} className="t-label flex items-center gap-2 text-smoke transition-colors hover:text-bone">
-              Haut de page <ArrowDown className="h-3 w-2 rotate-180" />
-            </button>
-          </li>
-        </ul>
-      </div>
-
-      {/* Logotype monumental — signature de fin de page */}
-      <div className="shell pb-4" aria-hidden data-reveal="scan">
-        <svg viewBox="905 160 2160 222" className="w-full" fill="var(--color-bone)" opacity="0.07">
+      {/* Logotype en filigrane — signature de fin de page */}
+      <div className="shell pb-6" aria-hidden data-reveal="fade">
+        <svg viewBox="895 150 2010 262" className="w-full" fill="currentColor" opacity="0.06">
           {WORDMARK.map(([t, d], i) => (
             <path key={i} transform={t} d={d} />
           ))}

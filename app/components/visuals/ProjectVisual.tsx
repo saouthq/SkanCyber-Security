@@ -2,7 +2,7 @@ import type { ProjectVisual as Kind } from "~/content/projects";
 
 /**
  * Visuels schématiques provisoires des études de cas — dessinés dans le
- * langage de la marque (filets, bits, un seul signal). À remplacer par de
+ * langage du site (filets fins, un seul accent ambre). À remplacer par de
  * vraies captures ou vidéos du projet.
  */
 export function ProjectVisual({ kind, className = "" }: { kind: Kind; className?: string }) {
@@ -10,10 +10,10 @@ export function ProjectVisual({ kind, className = "" }: { kind: Kind; className?
     <svg viewBox="0 0 800 520" className={`project-visual ${className}`} role="img" aria-label="Visuel schématique provisoire">
       <defs>
         <pattern id={`dots-${kind}`} width="20" height="20" patternUnits="userSpaceOnUse">
-          <rect x="9" y="9" width="2" height="2" rx="0.5" fill="var(--color-bone)" fillOpacity="0.12" />
+          <rect x="9" y="9" width="2" height="2" rx="1" fill="var(--color-ink)" fillOpacity="0.1" />
         </pattern>
       </defs>
-      <rect width="800" height="520" fill="var(--color-graphite)" />
+      <rect width="800" height="520" fill="var(--color-white)" />
       <rect width="800" height="520" fill={`url(#dots-${kind})`} />
       {kind === "portal" && <Portal />}
       {kind === "logistics" && <Logistics />}
@@ -23,9 +23,9 @@ export function ProjectVisual({ kind, className = "" }: { kind: Kind; className?
   );
 }
 
-const stroke = { stroke: "var(--color-bone)", strokeOpacity: 0.22, fill: "none", strokeWidth: 1 } as const;
-const fill = (o: number) => ({ fill: "var(--color-bone)", fillOpacity: o });
-const signal = { fill: "var(--color-signal)" };
+const stroke = { stroke: "var(--color-ink)", strokeOpacity: 0.16, fill: "none", strokeWidth: 1 } as const;
+const fill = (o: number) => ({ fill: "var(--color-ink)", fillOpacity: o * 0.55 });
+const signal = { fill: "var(--color-amber)" };
 
 function Portal() {
   return (
@@ -107,7 +107,7 @@ function Field() {
       <line x1="500" y1="215" x2="540" y2="215" {...stroke} strokeDasharray="3 5" strokeOpacity={0.5} />
       <rect x="70" y="200" width="170" height="120" rx="6" {...fill(0.03)} {...stroke} />
       <rect x="86" y="218" width="60" height="8" rx="2" {...fill(0.6)} />
-      <text x="86" y="296" fill="var(--color-bone)" fillOpacity="0.45" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="1.5">
+      <text x="86" y="296" fill="var(--color-ink)" fillOpacity="0.45" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="1.5">
         HORS LIGNE
       </text>
       <line x1="240" y1="260" x2="300" y2="260" {...stroke} strokeDasharray="3 5" strokeOpacity={0.5} />
@@ -126,7 +126,7 @@ function Network() {
       {zones.map((z, i) => (
         <g key={z.label}>
           <rect x={z.x} y={z.y} width={z.w} height="380" rx="6" {...fill(0.03)} {...stroke} strokeDasharray={i === 1 ? "0" : "4 5"} />
-          <text x={z.x + 16} y={z.y + 28} fill="var(--color-bone)" fillOpacity="0.5" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="2">
+          <text x={z.x + 16} y={z.y + 28} fill="var(--color-ink)" fillOpacity="0.5" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="2">
             ZONE {z.label}
           </text>
           {[0, 1, 2, 3].map((k) => (
@@ -134,8 +134,8 @@ function Network() {
           ))}
         </g>
       ))}
-      <line x1="250" y1="260" x2="305" y2="260" stroke="var(--color-signal)" strokeWidth="1.5" />
-      <line x1="495" y1="260" x2="550" y2="260" stroke="var(--color-signal)" strokeWidth="1.5" />
+      <line x1="250" y1="260" x2="305" y2="260" stroke="var(--color-amber)" strokeWidth="1.5" />
+      <line x1="495" y1="260" x2="550" y2="260" stroke="var(--color-amber)" strokeWidth="1.5" />
       <rect x="391" y="246" width="28" height="28" rx="5" {...signal} />
       <rect x="60" y="470" width="680" height="1" {...fill(0.2)} />
       <rect x="60" y="480" width="120" height="7" rx="2" {...fill(0.35)} />

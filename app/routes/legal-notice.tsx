@@ -24,7 +24,7 @@ export default function LegalNotice() {
                 Siège social : <Todo>adresse complète</Todo>. Immatriculation : <Todo>RCS / identifiant fiscal</Todo>.
               </p>
               <p>
-                Contact : <a href={`mailto:${site.email}`} className="link-underline text-bone">{site.email}</a> · <Todo>téléphone</Todo>
+                Contact : <a href={`mailto:${site.email}`} className="link-underline text-ink">{site.email}</a> · <Todo>téléphone</Todo>
               </p>
             </>
           ),

@@ -1,6 +1,5 @@
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts } from "react-router";
-import archivoLatin from "@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url";
-import instrumentLatin from "@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url";
+import instrumentLatin from "@fontsource-variable/instrument-sans/files/instrument-sans-latin-wdth-normal.woff2?url";
 
 import type { Route } from "./+types/root";
 import "./styles/app.css";
@@ -13,7 +12,6 @@ import { organizationJsonLd } from "~/lib/seo";
 import { NotFound } from "~/sections/NotFound";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preload", href: archivoLatin, as: "font", type: "font/woff2", crossOrigin: "anonymous" },
   { rel: "preload", href: instrumentLatin, as: "font", type: "font/woff2", crossOrigin: "anonymous" },
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
   { rel: "icon", href: "/favicon.ico", sizes: "any" },
@@ -35,8 +33,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <meta name="theme-color" content="#0b0b0d" />
-        <meta name="color-scheme" content="dark" />
+        <meta name="theme-color" content="#f2f1ed" />
+        <meta name="color-scheme" content="light" />
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />
         <Meta />
         <Links />
@@ -70,10 +68,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   const details = import.meta.env.DEV && error instanceof Error ? error.message : "Une erreur inattendue est survenue.";
   return (
     <main id="main" className="shell flex min-h-svh flex-col justify-center gap-6">
-      <p className="t-label text-signal">Erreur</p>
-      <h1 className="t-display t-h2">Le système a rencontré un problème.</h1>
+      <p className="t-eyebrow">Erreur</p>
+      <h1 className="t-display-m">Un problème est survenu.</h1>
       <p className="t-body max-w-xl">{details}</p>
-      <a href="/" className="t-label link-underline w-fit text-bone">
+      <a href="/" className="link-underline w-fit">
         Retour à l'accueil
       </a>
     </main>

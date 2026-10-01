@@ -19,10 +19,10 @@ export type NavItem = { label: string; to: string; index: string };
 
 export const primaryNav: NavItem[] = [
   { label: "Services", to: "/services", index: "01" },
-  { label: "Expertise", to: "/expertise", index: "02" },
+  { label: "Cybersécurité", to: "/cybersecurite", index: "02" },
   { label: "Projets", to: "/projets", index: "03" },
-  { label: "Cybersécurité", to: "/cybersecurite", index: "04" },
-  { label: "À propos", to: "/a-propos", index: "05" },
+  { label: "Expertise", to: "/expertise", index: "04" },
+  { label: "Studio", to: "/a-propos", index: "05" },
 ];
 
 export const legalNav: NavItem[] = [

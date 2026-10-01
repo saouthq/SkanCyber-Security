@@ -1,13 +1,12 @@
 /**
  * Vocabulaire de mouvement SkanCyber — trois gestes, réutilisés partout.
- *  · scan  : un trait balaie la zone et révèle le contenu (entrées de section, transitions)
- *  · trace : les lignes et schémas se dessinent (diagrammes, méthode, 3D)
- *  · lock  : les éléments se calent dans la grille, décélération nette, sans rebond
+ *  · masque : un volet s'ouvre et révèle l'image ou le titre (entrées, transitions)
+ *  · tracé  : les filets et schémas se dessinent (méthode, schémas)
+ *  · calage : les éléments se posent, décélération longue, sans rebond
  */
 export const ease = {
   precise: "precise",
   lock: "lock",
-  scan: "scan",
 } as const;
 
 export const duration = {

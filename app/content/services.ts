@@ -1,22 +1,12 @@
-export type LayerId = "interface" | "logique" | "flux" | "fondations" | "perimetre";
-
-export type GlyphId =
-  | "cyber"
-  | "software"
-  | "web"
-  | "mobile"
-  | "desktop"
-  | "saas"
-  | "automation"
-  | "infra";
+/** Les trois métiers. */
+export type PillarId = "proteger" | "construire" | "relier";
 
 export type Service = {
   slug: string;
   index: string;
   name: string;
   tagline: string;
-  layer: LayerId;
-  glyph: GlyphId;
+  pillar: PillarId;
   summary: string;
   intro: string;
   capabilities: { title: string; text: string }[];
@@ -31,8 +21,7 @@ export const services: Service[] = [
     index: "01",
     name: "Cybersécurité",
     tagline: "Mesurer l'exposition. Réduire la surface. Tenir dans la durée.",
-    layer: "perimetre",
-    glyph: "cyber",
+    pillar: "proteger",
     summary:
       "Audits, tests d'intrusion, durcissement et accompagnement à la conformité — avec des recommandations que vos équipes peuvent réellement appliquer.",
     intro:
@@ -59,8 +48,7 @@ export const services: Service[] = [
     index: "02",
     name: "Ingénierie logicielle",
     tagline: "Du logiciel métier conçu pour durer, pas seulement pour être livré.",
-    layer: "logique",
-    glyph: "software",
+    pillar: "construire",
     summary:
       "Conception et développement de logiciels sur mesure : architecture claire, code lisible, tests automatisés et documentation.",
     intro:
@@ -85,8 +73,7 @@ export const services: Service[] = [
     index: "03",
     name: "Sites & applications web",
     tagline: "Des interfaces rapides, accessibles et sûres, du site vitrine à l'application métier.",
-    layer: "interface",
-    glyph: "web",
+    pillar: "construire",
     summary:
       "Sites institutionnels, plateformes et applications web performantes, pensées pour l'accessibilité, le référencement et la sécurité.",
     intro:
@@ -111,8 +98,7 @@ export const services: Service[] = [
     index: "04",
     name: "Applications mobiles",
     tagline: "iOS et Android, fluides en main, robustes hors connexion.",
-    layer: "interface",
-    glyph: "mobile",
+    pillar: "construire",
     summary:
       "Applications mobiles natives ou multiplateformes, conçues pour les usages terrain comme pour le grand public.",
     intro:
@@ -137,8 +123,7 @@ export const services: Service[] = [
     index: "05",
     name: "Applications desktop",
     tagline: "Des outils de poste de travail précis, rapides et intégrés à votre environnement.",
-    layer: "interface",
-    glyph: "desktop",
+    pillar: "construire",
     summary:
       "Applications Windows, macOS et Linux pour les métiers qui exigent puissance, accès matériel ou fonctionnement local.",
     intro:
@@ -163,8 +148,7 @@ export const services: Service[] = [
     index: "06",
     name: "Solutions SaaS",
     tagline: "Des plateformes multi-clients pensées pour l'échelle et l'isolation des données.",
-    layer: "logique",
-    glyph: "saas",
+    pillar: "construire",
     summary:
       "Conception et développement de produits SaaS : architecture multi-tenant, facturation, gestion des rôles et observabilité.",
     intro:
@@ -189,8 +173,7 @@ export const services: Service[] = [
     index: "07",
     name: "Automatisation & intégration",
     tagline: "Relier vos outils et supprimer les tâches répétitives, sans créer de boîte noire.",
-    layer: "flux",
-    glyph: "automation",
+    pillar: "relier",
     summary:
       "Automatisation de processus, intégration de systèmes hétérogènes et pipelines de données fiables et observables.",
     intro:
@@ -215,8 +198,7 @@ export const services: Service[] = [
     index: "08",
     name: "Architecture & infrastructure",
     tagline: "Des fondations cloud et on-premise dimensionnées, observables et reproductibles.",
-    layer: "fondations",
-    glyph: "infra",
+    pillar: "relier",
     summary:
       "Architecture des systèmes d'information, infrastructure cloud ou sur site, infrastructure-as-code et DevOps.",
     intro:
@@ -240,33 +222,37 @@ export const services: Service[] = [
 
 export const getService = (slug: string) => services.find((s) => s.slug === slug);
 
-export const layers: { id: LayerId; index: string; name: string; label: string; text: string }[] = [
+export type Pillar = {
+  id: PillarId;
+  index: string;
+  verb: string;
+  name: string;
+  text: string;
+};
+
+export const pillars: Pillar[] = [
   {
-    id: "interface",
-    index: "02.1",
-    name: "Interface",
-    label: "Ce que vos utilisateurs touchent",
-    text: "Sites, applications web, mobiles et desktop. La surface visible du système — et la plus exposée.",
+    id: "proteger",
+    index: "01",
+    verb: "Protéger",
+    name: "Cybersécurité",
+    text: "Audits, tests d'intrusion, durcissement et conformité. La sécurité couvre l'ensemble : elle se décide dans l'architecture et s'éprouve à chaque livraison.",
   },
   {
-    id: "logique",
-    index: "02.2",
-    name: "Logique",
-    label: "Ce que votre métier exige",
-    text: "Logiciels sur mesure et plateformes SaaS. Les règles de votre activité, traduites en code lisible et testé.",
+    id: "construire",
+    index: "02",
+    verb: "Construire",
+    name: "Ingénierie logicielle",
+    text: "Logiciels sur mesure, sites et applications web, mobiles, desktop, plateformes SaaS. Du code lisible, testé, conçu pour durer.",
   },
   {
-    id: "flux",
-    index: "02.3",
-    name: "Flux",
-    label: "Ce qui circule entre vos outils",
-    text: "Automatisation et intégration. Les données passent d'un système à l'autre sans ressaisie et sans perte.",
-  },
-  {
-    id: "fondations",
-    index: "02.4",
-    name: "Fondations",
-    label: "Ce sur quoi tout repose",
-    text: "Architecture, cloud et infrastructure. Des environnements reproductibles, supervisés et dimensionnés.",
+    id: "relier",
+    index: "03",
+    verb: "Relier",
+    name: "Infrastructure & intégration",
+    text: "Architecture, cloud, réseau, automatisation. Les fondations sur lesquelles tout repose, et les flux qui relient vos outils.",
   },
 ];
+
+export const servicesFor = (pillar: PillarId) => services.filter((s) => s.pillar === pillar);
+export const pillarOf = (s: Service) => pillars.find((p) => p.id === s.pillar)!;

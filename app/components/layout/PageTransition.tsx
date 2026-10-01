@@ -13,17 +13,18 @@ import { pageLifecycle } from "~/animations/page-lifecycle";
 import { primaryNav } from "~/content/site";
 import { prefersReducedMotion } from "~/lib/env";
 import { getLenis } from "~/lib/lenis";
+import { LogoSymbol } from "~/components/ui/Logo";
 
 type TransitionApi = { go: (to: string) => void };
 const TransitionContext = createContext<TransitionApi>({ go: () => {} });
 export const usePageTransition = () => useContext(TransitionContext);
 
 function labelFor(pathname: string) {
-  if (pathname === "/") return "§ 00 — Index";
+  if (pathname === "/") return "Accueil";
   const match = primaryNav.find((n) => pathname.startsWith(n.to));
-  if (match) return `§ ${match.index} — ${match.label}`;
-  if (pathname.startsWith("/contact")) return "§ 06 — Contact";
-  return "§ — SkanCyber";
+  if (match) return match.label;
+  if (pathname.startsWith("/contact")) return "Contact";
+  return "SkanCyber Security";
 }
 
 function resetScroll() {
@@ -80,7 +81,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
 
       const el = overlay.current;
       const panel = el.querySelector("[data-panel]");
-      const line = el.querySelector("[data-line]");
+      const mark = el.querySelector("[data-mark]");
       const label = el.querySelector("[data-label]");
       if (label) label.textContent = labelFor(target.pathname);
 
@@ -92,9 +93,9 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
           },
         })
         .set(el, { visibility: "visible" })
-        .fromTo(panel, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.55, ease: "precise" })
-        .fromTo(line, { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "scan" }, 0.12)
-        .fromTo(label, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "lock" }, 0.25);
+        .fromTo(panel, { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: "precise" })
+        .fromTo(mark, { autoAlpha: 0, scale: 0.85, rotate: -8 }, { autoAlpha: 1, scale: 1, rotate: 0, duration: 0.5, ease: "lock" }, 0.2)
+        .fromTo(label, { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.4, ease: "lock" }, 0.26);
     },
     [navigate],
   );
@@ -115,6 +116,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     awaitingReveal.current = false;
     const el = overlay.current!;
     const panel = el.querySelector("[data-panel]");
+    const mark = el.querySelector("[data-mark]");
     const label = el.querySelector("[data-label]");
     gsap
       .timeline({
@@ -129,7 +131,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
           document.getElementById("main")?.focus({ preventScroll: true });
         },
       })
-      .to(label, { autoAlpha: 0, y: -10, duration: 0.25, ease: "precise" })
+      .to([mark, label], { autoAlpha: 0, y: -10, duration: 0.25, ease: "precise" })
       .to(panel, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.6, ease: "precise" }, 0.05);
   }, [location.pathname]);
 
@@ -139,9 +141,11 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     <TransitionContext.Provider value={api}>
       {children}
       <div ref={overlay} className="pointer-events-none fixed inset-0 z-[90]" style={{ visibility: "hidden" }} aria-hidden>
-        <div data-panel className="absolute inset-0 flex items-center justify-center bg-ink">
-          <div data-line className="absolute left-0 right-0 top-1/2 h-px origin-left bg-signal/70" />
-          <span data-label className="t-label relative mt-10 text-ash" />
+        <div data-panel className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-paper">
+          <span data-mark className="block w-12">
+            <LogoSymbol />
+          </span>
+          <span data-label className="t-eyebrow" />
         </div>
       </div>
     </TransitionContext.Provider>
