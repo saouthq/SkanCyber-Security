@@ -101,7 +101,7 @@
 @layer components {
   /* Titre d'ouverture : la typographie est le visuel */
   .t-hero {
-    font-size: clamp(3.9rem, 15.2vw, 17rem);
+    font-size: clamp(3.9rem, 17.5vw, 19rem);
     font-weight: 480;
     font-variation-settings: "wght" 480, "wdth" 96;
     line-height: 0.86;

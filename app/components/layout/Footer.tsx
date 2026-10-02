@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useLocation } from "react-router";
 import { useScrollReveals } from "~/hooks/useScrollReveals";
 import { legalNav, primaryNav, site } from "~/content/site";
 import { services } from "~/content/services";
@@ -14,6 +15,7 @@ import { WORDMARK } from "~/components/ui/logo-paths";
  */
 export function Footer() {
   const ref = useRef<HTMLElement>(null);
+  const onContact = useLocation().pathname.startsWith("/contact");
   useScrollReveals(ref);
 
   const toTop = () => {
@@ -25,6 +27,8 @@ export function Footer() {
   return (
     <footer ref={ref} className="on-dark relative overflow-hidden bg-graphite" aria-labelledby="footer-title">
       <div className="shell pb-16 pt-[var(--spacing-section)]">
+        {!onContact && (
+          <>
         <p className="t-eyebrow" data-reveal="fade">
           Un projet, un audit, une question technique
         </p>
@@ -44,7 +48,9 @@ export function Footer() {
           </a>
         </div>
 
-        <div className="mt-[var(--spacing-section-sm)] grid gap-12 border-t border-[var(--line-inverse)] pt-12 sm:grid-cols-2 lg:grid-cols-12">
+          </>
+        )}
+        <div className={`${onContact ? "" : "mt-[var(--spacing-section-sm)]"} grid gap-12 border-t border-[var(--line-inverse)] pt-12 sm:grid-cols-2 lg:grid-cols-12`}>
           <nav className="lg:col-span-3" aria-label="Plan du site">
             <p className="t-small mb-5 text-mist">Studio</p>
             <ul className="space-y-2.5">
@@ -105,7 +111,7 @@ export function Footer() {
 
       {/* Logotype en filigrane — signature de fin de page */}
       <div className="shell pb-6" aria-hidden data-reveal="fade">
-        <svg viewBox="895 150 2010 262" className="w-full" fill="currentColor" opacity="0.06">
+        <svg viewBox="890 138 2115 264" className="w-full" fill="currentColor" opacity="0.06">
           {WORDMARK.map(([t, d], i) => (
             <path key={i} transform={t} d={d} />
           ))}
