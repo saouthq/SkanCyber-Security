@@ -1,2 +1,2 @@
-import GroupExperience from '@/components/GroupExperience';
-export default function Page(){return <GroupExperience/>}
+import SkanExperience from '@/components/SkanExperience';
+export default function Page(){return <SkanExperience/>}

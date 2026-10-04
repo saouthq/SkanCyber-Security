@@ -2,3 +2,8 @@ qa-group/
 qa/
 *.zip
 .env*
+node_modules/
+.next/
+out/
+.git/
+*.tsbuildinfo

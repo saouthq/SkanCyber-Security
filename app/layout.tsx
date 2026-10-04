@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
-import './group.css';
-export const metadata: Metadata = { title: 'SkanCyber — Un groupe. Le réseau, la sécurité et vos logiciels.', description: 'SkanCyber réunit le réseau, la cybersécurité et les logiciels métier : SkanFact, SkanEcom et SkanRestau. Découvrez le groupe et ses solutions.', icons: { icon: '/favicon.svg' } };
-export default function Layout({children}:{children:React.ReactNode}) { return <html lang="fr" data-scroll-behavior="smooth"><body>{children}</body></html> }
+import localFont from 'next/font/local';
+import './experience.css';
+const sans = localFont({ src: [{ path: '../public/fonts/font-0.ttf', weight: '400' }, { path: '../public/fonts/font-1.ttf', weight: '500' }, { path: '../public/fonts/font-2.ttf', weight: '600' }, { path: '../public/fonts/font-3.ttf', weight: '700' }], variable: '--font-sans', display: 'swap' });
+const mono = localFont({ src: '../public/fonts/font-4.ttf', variable: '--font-mono', display: 'swap' });
+export const metadata: Metadata = { title: 'SkanCyber — Votre métier. Sans friction.', description: 'SkanCyber réunit le réseau, la cybersécurité et les logiciels métier : SkanFact, SkanEcom et SkanRestau. Découvrez le groupe et ses solutions.', icons: { icon: '/favicon.svg' } };
+export default function Layout({children}:{children:React.ReactNode}) { return <html lang="fr" data-scroll-behavior="smooth" className={`${sans.variable} ${mono.variable}`}><body>{children}</body></html> }
