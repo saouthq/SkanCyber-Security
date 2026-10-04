@@ -1,0 +1,4 @@
+qa-group/
+qa/
+*.zip
+.env*

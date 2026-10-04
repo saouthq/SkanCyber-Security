@@ -1,7 +1,7 @@
-node_modules
-/build
-/.react-router
-.DS_Store
-*.log
+node_modules/
+.next/
+out/
+*.tsbuildinfo
 .env*
-!.env.example
+.vercel/
+.vercel
