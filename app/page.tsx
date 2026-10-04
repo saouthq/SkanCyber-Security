@@ -1,2 +1,2 @@
-import SkanExperience from '@/components/SkanExperience';
-export default function Page(){return <SkanExperience/>}
+import PremiumSite from '@/components/PremiumSite';
+export default function Page(){return <PremiumSite/>}

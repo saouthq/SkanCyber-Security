@@ -1,8 +1,8 @@
-# SkanCyber — site du groupe
+# SkanCyber — site vitrine
 
-Site vitrine français en Next.js 15, React 19, TypeScript, Framer Motion et Three.js. Export statique, sans variable d’environnement requise pour le site.
+Site français en Next.js 15, React 19, TypeScript et Framer Motion. Export statique, sans variable d’environnement requise.
 
-## Développement et vérification
+## Développement
 
 ```sh
 npm ci
@@ -11,29 +11,25 @@ npm run check
 npm run build
 ```
 
-Le build exporte la page dans `out/`. Les polices sont locales. Aucune texture distante, aucun suivi d’audience ni cookie de collecte.
+Le build exporte le site dans `out/`. Polices locales, aucun suivi d’audience ni cookie de collecte.
 
-## Direction artistique
+## Présentation
 
-Ivoire, bleu électrique, orange signal et vert minéral. Sculpture procédurale en Three.js, narration en trois temps au défilement, démonstrations interactives des logiciels, schéma du restaurant de Strasbourg et contact contextualisé.
+Identité bleu nuit, blanc cassé et menthe. Une vitrine consacrée aux réseaux, aux sites web, aux logiciels métier, aux ERP, aux CRM et aux back-offices.
 
-- `components/SkanExperience.tsx` : narration, navigation, schéma et contact.
-- `components/SignalSculpture.tsx` : sculpture 3D procédurale, cycle de vie et pointeur.
-- `components/ProductLab.tsx` : présentation des produits et démonstrations.
-- `app/experience.css` : mise en page, identité, adaptations et mouvement réduit.
+- `components/PremiumSite.tsx` : navigation responsive, services et aperçus, réalisations, approche, FAQ et contact.
+- `app/premium.css` : identité, mises en page et adaptations mobiles.
+- `public/images/infrastructure.jpg` : illustration d’infrastructure créée pour le site ; elle ne représente pas une installation client.
 
-Le WebGL utilise une résolution plafonnée et s’arrête hors écran ou en onglet masqué. Une illustration vectorielle remplace la 3D avec le mouvement réduit ou si WebGL est indisponible. Le bouton de pause arrête les animations ambiantes. La narration reste lisible sans mouvement et les démos sont pilotées manuellement.
-
-Les démos utilisent des données fictives. SkanEcom et SkanRestau montrent des concepts d’interface ; leur disponibilité et leur périmètre sont à préciser avec le fondateur. Aucune connexion entre les produits n’est promise. Le réseau du restaurant repose sur les informations du projet fourni ; les interactions sont simulées.
+Les animations de révélation et les transitions respectent la préférence de mouvement réduit. Les aperçus d’interfaces utilisent des données fictives. Les réalisations présentent SkanFact et le projet réseau du restaurant de Strasbourg décrit dans les informations fournies. Les coordonnées permettent de contacter directement SkanCyber par téléphone ; le site ne simule pas un envoi de formulaire.
 
 ## Publication
 
-Projet Vercel existant : `skancyber-security`. Production : https://skancyber-security.vercel.app
+Projet Vercel : `skancyber-security`. Production : https://skancyber-security.vercel.app
 
 ```sh
-vercel link --project skancyber-security --scope saouthqs-projects
 vercel deploy --yes
-vercel promote <url-validée> --yes
+vercel deploy --prod --yes
 ```
 
-La source est conservée dans le dépôt `saouthq/SkanCyber-Security`, branche par défaut `claude/dazzling-babbage-jcert0`.
+Dépôt : `saouthq/SkanCyber-Security`, branche par défaut `claude/dazzling-babbage-jcert0`.
