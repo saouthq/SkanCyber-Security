@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll } from 'framer-motion';
+import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 
@@ -45,6 +45,8 @@ export function ProjectStory() {
   const [paused, setPaused] = useState(false);
   const [ready, setReady] = useState(false);
   const [chapter, setChapter] = useState(0);
+  const [docked, setDocked] = useState(-1);
+  const dock = useRef(-1);
   const phase = useRef(0);
   const points = useRef<Point[]>([]);
   const stationPoints = useRef<Point[]>([]);
@@ -54,16 +56,21 @@ export function ProjectStory() {
   const track = useMotionValue(''), trail = useMotionValue('');
   const fill = useMotionValue(0);
   const presence = useMotionValue(1);
+  const destination = useMotionValue(0);
+  const travel = useSpring(destination, { stiffness: 46, damping: 22, mass: 1.2 });
+  const arrival = useMotionValue(1);
+  const settledPresence = useSpring(presence, { stiffness: 65, damping: 23 });
   const enabled = ready && !paused && !reduced;
 
   useEffect(() => {
     if (reduced) { setReady(false); return; }
     let frame = 0;
     let disposed = false;
-    const update = (scroll: number) => {
+    let positioned = false;
+    let fade: ReturnType<typeof animate> | undefined;
+    const render = (targetY: number, scroll: number) => {
       const stops = points.current;
       if (stops.length < chapters.length) return;
-      const targetY = scroll + screen.current.height * .62;
       let i = 0;
       while (i < stops.length - 2 && targetY > stops[i + 1].y) i++;
       const a = stops[i], b = stops[i + 1];
@@ -74,15 +81,38 @@ export function ProjectStory() {
       }
       const t = targetY <= a.y ? 0 : targetY >= b.y ? 1 : (low + high) / 2;
       const c = curve(a, b, t);
-      x.set(c.point.x); y.set(c.point.y - scroll); turn.set((i + t) * 90);
-      presence.set(1 + (i % 5 === 2 ? Math.sin(t * Math.PI) * (screen.current.width <= 700 ? .5 : .75) : 0));
+      x.set(c.point.x); y.set(c.point.y - scroll); turn.set((i + t) * 28);
+      presence.set(1 + (i % 5 === 2 ? Math.sin(t * Math.PI) * (screen.current.width <= 700 ? .15 : .28) : 0));
       let active = 0;
       for (let n = 1; n < stationPoints.current.length; n++) { if (targetY >= stationPoints.current[n].y - 65) active = n; }
       if (active !== phase.current) { phase.current = active; setChapter(active); }
+      const landed = stationPoints.current.findIndex(p => Math.abs(targetY - p.y) < 8 && Math.abs(destination.get() - p.y) < 1);
+      if (landed !== dock.current) { dock.current = landed; setDocked(landed); }
       fill.set((i + t) / (stops.length - 1));
       const path = (start: Point, first: Point, second: Point, end: Point) => `M${start.x},${start.y - scroll} C${first.x},${first.y - scroll} ${second.x},${second.y - scroll} ${end.x},${end.y - scroll}`;
       track.set(path(a, c.c, c.d, b));
       trail.set(path(a, c.ab, c.abc, c.point));
+    };
+    const update = (scroll: number) => {
+      const focal = scroll + screen.current.height * .6;
+      let target = focal;
+      // A quiet interval lets the signal settle into a section before it departs.
+      for (const station of stationPoints.current) {
+        const distance = focal - station.y;
+        if (Math.abs(distance) < 180) {
+          const t = Math.max(0, (Math.abs(distance) - 65) / 115);
+          target = station.y + Math.sign(distance) * 180 * t * t * (3 - 2 * t);
+          break;
+        }
+      }
+      if (!positioned || Math.abs(target - travel.get()) > screen.current.height * .9) {
+        // Anchor navigation fades into the new chapter instead of racing across the page.
+        fade?.stop(); arrival.set(positioned ? 0 : 1);
+        travel.jump(target); destination.set(target);
+        if (positioned) fade = animate(arrival, 1, { duration: .7, ease: [.22, 1, .36, 1] });
+        positioned = true;
+      } else destination.set(target);
+      render(travel.get(), scroll);
     };
     const measure = () => {
       const anchors = [...document.querySelectorAll<HTMLElement>('[data-story-anchor]')];
@@ -98,7 +128,10 @@ export function ProjectStory() {
         const bridge = document.querySelector<HTMLElement>(`[data-story-bridge="${n}"]`);
         const r = bridge?.getBoundingClientRect();
         const middle = r ? r.top + r.height / 2 + window.scrollY : (a.y + b.y) / 2;
-        route.push({x:side(a),y:a.y+25},{x:side(a),y:middle-38},{x:side(b),y:middle+38},{x:side(b),y:b.y-25},b);
+        const crossing = Math.min((r?.height ?? 260) * .42, mobile ? 110 : 155);
+        const departure = Math.min(a.y + 145, middle - crossing - 30);
+        const approach = Math.max(b.y - 145, middle + crossing + 30);
+        route.push({x:side(a),y:departure},{x:side(a),y:middle-crossing},{x:side(b),y:middle+crossing},{x:side(b),y:approach},b);
       }
       points.current = route;
       update(window.scrollY); setReady(anchors.length === chapters.length);
@@ -108,10 +141,11 @@ export function ProjectStory() {
     document.querySelectorAll('main > section').forEach(el => observer.observe(el));
     window.addEventListener('resize', schedule);
     const unsubscribe = scrollY.on('change', update);
+    const unsubscribeTravel = travel.on('change', value => render(value, window.scrollY));
     document.fonts.ready.then(schedule);
     schedule();
-    return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); unsubscribe(); window.removeEventListener('resize', schedule); };
-  }, [reduced, scrollY, x, y, turn, track, trail, fill, presence]);
+    return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); unsubscribe(); unsubscribeTravel(); fade?.stop(); window.removeEventListener('resize', schedule); };
+  }, [reduced, scrollY, x, y, turn, track, trail, fill, presence, destination, travel, arrival]);
 
   useEffect(() => {
     document.documentElement.dataset.storyFlight = enabled ? 'on' : 'off';
@@ -123,10 +157,15 @@ export function ProjectStory() {
     return () => { delete document.documentElement.dataset.storyChapter; };
   }, [chapter]);
 
+  useEffect(() => {
+    document.documentElement.dataset.storyDock = String(docked);
+    return () => { delete document.documentElement.dataset.storyDock; };
+  }, [docked]);
+
   return <>
     {enabled && <div className="p-story-flight" aria-hidden="true">
       <svg className="p-story-path"><motion.path d={track} className="p-story-track" /><motion.path d={trail} className="p-story-trail" /></svg>
-      <motion.div className={`p-story-signal signal-${chapter}`} style={{ left: x, top: y }}><motion.div className="p-story-body" style={{scale:presence}}><motion.i className="p-story-orbit" style={{ rotate: turn }} /><span className="p-story-core"><AnimatePresence mode="wait" initial={false}><motion.span key={chapter} initial={{opacity:0,scale:.55,rotate:-20}} animate={{opacity:1,scale:1,rotate:0}} exit={{opacity:0,scale:.55,rotate:20}} transition={{duration:.24}}><StoryGlyph index={chapter}/></motion.span></AnimatePresence></span></motion.div></motion.div>
+      <motion.div className={`p-story-signal signal-${chapter}`} style={{ left: x, top: y, opacity: arrival }}><motion.div className="p-story-body" style={{scale:settledPresence}}><motion.i className="p-story-orbit" style={{ rotate: turn }} /><AnimatePresence>{docked >= 0 && <motion.span key={docked} className="p-story-landing" initial={{scale:.85,opacity:.6}} animate={{scale:2.1,opacity:0}} exit={{opacity:0}} transition={{duration:1.6,ease:"easeOut"}}/>}</AnimatePresence><span className="p-story-core"><AnimatePresence mode="wait" initial={false}><motion.span key={chapter} initial={{opacity:0,scale:.8}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:.8}} transition={{duration:.5}}><StoryGlyph index={chapter}/></motion.span></AnimatePresence></span></motion.div></motion.div>
     </div>}
     {ready && !reduced && <aside className="p-story-caption" aria-label="Le fil de votre projet">
       <span className="p-story-caption-dot" /><div><span className="p-story-caption-label">LE FIL DE VOTRE PROJET</span><span className="p-story-caption-title">0{chapter + 1} — {chapters[chapter].label}</span></div>
