@@ -25,6 +25,8 @@ Identité bleu nuit, blanc cassé et menthe. Une vitrine consacrée aux réseaux
 
 Les sections communiquent : liens d’accueil vers la bonne expertise, réalisations vers leurs domaines, services vers les projets correspondants et sujet conservé au contact. La navigation indique la section en cours. Les animations de révélation et les transitions respectent la préférence de mouvement réduit. Les aperçus d’interfaces utilisent des données fictives. Les réalisations présentent SkanFact et le projet réseau du restaurant de Strasbourg décrit dans les informations fournies. Les coordonnées permettent de contacter directement SkanCyber par téléphone ; le site ne simule pas un envoi de formulaire.
 
+Le signal évolue au fil du récit : emblème, réseau, interface, modules et validation. Les traversées entre sections prennent davantage de présence. Le schéma réseau permet d’explorer quatre usages et l’aperçu du site web propose une bascule ordinateur/mobile animée.
+
 ## Publication
 
 Projet Vercel : `skancyber-security`. Production : https://skancyber-security.vercel.app

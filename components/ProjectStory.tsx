@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useMotionValue, useReducedMotion, useScroll } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 
@@ -21,14 +21,20 @@ function curve(a: Point, b: Point, t: number) {
   const abc = lerp(ab, bc, t), bcd = lerp(bc, cd, t);
   return { point: lerp(abc, bcd, t), c, d, ab, abc };
 }
-function Mark() {
-  return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 8h18v6H13v4h12v6H7v-6h12v-4H7Z" fill="currentColor" /></svg>;
+function StoryGlyph({ index }: { index: number }) {
+  return <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" className="p-story-glyph">
+    {index === 0 ? <path d="M7 8h18v6H13v4h12v6H7v-6h12v-4H7Z" fill="currentColor" /> : index === 1 ? <g stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="11" y="4" width="10" height="8" rx="2"/><path d="M16 12v7M6 19h20M6 19v4M16 19v4M26 19v4"/><rect x="3" y="23" width="6" height="5" rx="1"/><rect x="13" y="23" width="6" height="5" rx="1"/><rect x="23" y="23" width="6" height="5" rx="1"/></g> : index === 2 ? <g stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="26" height="22" rx="3"/><path d="M3 11h26M8 8h1M12 8h1M11 16l-3 3 3 3M21 16l3 3-3 3M17 15l-2 8"/></g> : index === 3 ? <g stroke="currentColor" strokeWidth="1.6"><rect x="4" y="4" width="10" height="10" rx="2"/><rect x="18" y="4" width="10" height="10" rx="2"/><rect x="4" y="18" width="10" height="10" rx="2"/><rect x="18" y="18" width="10" height="10" rx="2"/></g> : <g stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="16" cy="16" r="12"/><path d="m10 16 4 4 8-8"/></g>}
+  </svg>;
+}
+
+export function StoryBridge({ index }: { index: number }) {
+  return <div className={`p-story-bridge bridge-${index}`} data-story-bridge={index} aria-hidden="true"><span>{['CONNECTER.', 'CONCRÉTISER.', 'DÉPLOYER.', 'ACCOMPAGNER.'][index]}</span></div>;
 }
 
 export function StoryStation({ index }: { index: number }) {
   const chapter = chapters[index];
   return <div className={`p-story-station station-${index}`}>
-    <span className="p-story-dock" data-story-anchor={index} aria-hidden="true"><Mark /></span>
+    <span className="p-story-dock" data-story-anchor={index} aria-hidden="true"><StoryGlyph index={index} /></span>
     <div className="p-story-copy"><span className="p-story-eyebrow">0{index + 1} / {chapter.label}</span><h3>{chapter.title}</h3><p>{chapter.detail}</p></div>
     <span className="p-story-station-line" aria-hidden="true" />
   </div>;
@@ -47,6 +53,7 @@ export function ProjectStory() {
   const x = useMotionValue(0), y = useMotionValue(0), turn = useMotionValue(0);
   const track = useMotionValue(''), trail = useMotionValue('');
   const fill = useMotionValue(0);
+  const presence = useMotionValue(1);
   const enabled = ready && !paused && !reduced;
 
   useEffect(() => {
@@ -67,7 +74,8 @@ export function ProjectStory() {
       }
       const t = targetY <= a.y ? 0 : targetY >= b.y ? 1 : (low + high) / 2;
       const c = curve(a, b, t);
-      x.set(c.point.x); y.set(c.point.y - scroll); turn.set((i + t) * 180);
+      x.set(c.point.x); y.set(c.point.y - scroll); turn.set((i + t) * 90);
+      presence.set(1 + (i % 5 === 2 ? Math.sin(t * Math.PI) * (screen.current.width <= 700 ? .5 : .75) : 0));
       let active = 0;
       for (let n = 1; n < stationPoints.current.length; n++) { if (targetY >= stationPoints.current[n].y - 65) active = n; }
       if (active !== phase.current) { phase.current = active; setChapter(active); }
@@ -103,17 +111,22 @@ export function ProjectStory() {
     document.fonts.ready.then(schedule);
     schedule();
     return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); unsubscribe(); window.removeEventListener('resize', schedule); };
-  }, [reduced, scrollY, x, y, turn, track, trail, fill]);
+  }, [reduced, scrollY, x, y, turn, track, trail, fill, presence]);
 
   useEffect(() => {
     document.documentElement.dataset.storyFlight = enabled ? 'on' : 'off';
     return () => { delete document.documentElement.dataset.storyFlight; };
   }, [enabled]);
 
+  useEffect(() => {
+    document.documentElement.dataset.storyChapter = String(chapter);
+    return () => { delete document.documentElement.dataset.storyChapter; };
+  }, [chapter]);
+
   return <>
     {enabled && <div className="p-story-flight" aria-hidden="true">
       <svg className="p-story-path"><motion.path d={track} className="p-story-track" /><motion.path d={trail} className="p-story-trail" /></svg>
-      <motion.div className="p-story-signal" style={{ left: x, top: y }}><motion.i className="p-story-orbit" style={{ rotate: turn }} /><span className="p-story-core"><Mark /></span></motion.div>
+      <motion.div className={`p-story-signal signal-${chapter}`} style={{ left: x, top: y }}><motion.div className="p-story-body" style={{scale:presence}}><motion.i className="p-story-orbit" style={{ rotate: turn }} /><span className="p-story-core"><AnimatePresence mode="wait" initial={false}><motion.span key={chapter} initial={{opacity:0,scale:.55,rotate:-20}} animate={{opacity:1,scale:1,rotate:0}} exit={{opacity:0,scale:.55,rotate:20}} transition={{duration:.24}}><StoryGlyph index={chapter}/></motion.span></AnimatePresence></span></motion.div></motion.div>
     </div>}
     {ready && !reduced && <aside className="p-story-caption" aria-label="Le fil de votre projet">
       <span className="p-story-caption-dot" /><div><span className="p-story-caption-label">LE FIL DE VOTRE PROJET</span><span className="p-story-caption-title">0{chapter + 1} — {chapters[chapter].label}</span></div>
