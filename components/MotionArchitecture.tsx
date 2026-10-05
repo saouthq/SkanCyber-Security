@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { AnimatePresence, motion, useInView, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
 import { ArrowDown, ArrowUpRight, Check, Database, Globe2, Network, ShieldCheck, Wifi } from 'lucide-react';
 
 const acts = [
@@ -40,24 +40,23 @@ function ArchitectureTile({ index, progress, reduced }: { index: number; progres
 export default function MotionArchitecture() {
   const ref = useRef<HTMLElement>(null);
   const reduced = !!useReducedMotion();
-  const visible = useInView(ref, { amount: .12 });
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
   const progress = useMotionValue(0);
   const [act, setAct] = useState(0);
   const phase = useRef(0);
   useMotionValueEvent(scrollYProgress, 'change', value => { progress.set(value); const next = value < .32 ? 0 : value < .7 ? 1 : 2; if (phase.current !== next) { phase.current = next; setAct(next); } });
-  const line = useTransform(progress, [0, .15, .3], [0, 1, 1]);
+  const line = useTransform(progress, [0, .08, .21], [0, 0, 1]);
   const linesOpacity = useTransform(progress, [.2, .4], [1, 0]);
   const frameOpacity = useTransform(progress, [.24, .48], [0, 1]);
-  const coreLeft = useTransform(progress, [.2, .48], ['50%', '9%']);
-  const coreTop = useTransform(progress, [.2, .48], ['50%', '12%']);
-  const coreScale = useTransform(progress, [.2, .48], [1, .48]);
+  const coreLeft = useTransform(progress, [0, .08, .2, .48], ['13%', '50%', '50%', '9%']);
+  const coreTop = useTransform(progress, [0, .08, .2, .48], ['20%', '50%', '50%', '12%']);
+  const coreScale = useTransform(progress, [0, .08, .2, .48], [.6, 1, 1, .48]);
   const sceneRotate = useTransform(progress, [0, .45, .75, 1], [-8, 0, 0, -3]);
   const depth = useTransform(progress, [0, .45, .75, 1], [12, 0, 0, 8]);
   const tiltX = useMotionValue(0), tiltY = useMotionValue(0);
   const pointerX = useSpring(tiltX, { stiffness: 100, damping: 25 }), pointerY = useSpring(tiltY, { stiffness: 100, damping: 25 });
-  const choose = (index: number) => { if (!ref.current || reduced) return; const box = ref.current.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + box.top + (box.height - window.innerHeight) * [0.06, .5, .94][index], behavior: 'smooth' }); };
-  return <section ref={ref} className={`p-cinema ${reduced ? 'is-static' : ''}`} data-playing={visible} aria-label="Du réseau à votre outil : une vision d’ensemble">
+  const choose = (index: number) => { if (!ref.current || reduced) return; const box = ref.current.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + box.top + (box.height - window.innerHeight) * [.17, .5, .94][index], behavior: 'smooth' }); };
+  return <section ref={ref} id="vision" className={`p-cinema ${reduced ? 'is-static' : ''}`} aria-label="Du réseau à votre outil : une vision d’ensemble">
     <div className="ma-sticky">
       <div className="ma-topline"><span><i /> UNE VISION. UN ÉCOSYSTÈME.</span><a href="#expertises">Explorer les expertises <ArrowDown size={13} /></a></div>
       <div className="ma-layout">
@@ -66,6 +65,7 @@ export default function MotionArchitecture() {
           <div className="ma-stage-grid" /><motion.div className="ma-parallax" style={reduced ? undefined : { rotateX: pointerX, rotateY: pointerY, transformPerspective: 1400 }}><motion.div className="ma-scene" style={reduced ? undefined : { rotateZ: sceneRotate, rotateX: depth, transformPerspective: 1200 }}>
             <motion.div className="ma-frame" style={{ opacity: reduced ? 1 : frameOpacity }}><div className="ma-window-bar"><i /><i /><i /><span>Votre espace numérique</span><ArrowUpRight size={12} /></div><div className="ma-window-heading">{act < 2 && !reduced ? 'Un univers à votre image.' : 'Votre entreprise. En clair.'}<span>SK / SUR MESURE</span></div></motion.div>
             <motion.svg className="ma-network-lines" viewBox="0 0 600 420" style={{ opacity: reduced ? 0 : linesOpacity }}><defs><linearGradient id="ma-line"><stop stopColor="#a2efce" stopOpacity=".2" /><stop offset=".5" stopColor="#a2efce" /><stop offset="1" stopColor="#a2efce" stopOpacity=".2" /></linearGradient></defs>{['M300 210H78V84','M300 210H522V84','M300 210H78V336','M300 210H522V336'].map(d => <motion.path key={d} d={d} pathLength={1} style={{ pathLength: line }} stroke="url(#ma-line)" fill="none" strokeWidth="1.5" />)}<circle cx="300" cy="210" r="60" /><circle cx="300" cy="210" r="85" /></motion.svg>
+            <motion.div className="ma-hub-shell" style={{opacity:reduced?0:linesOpacity}}><div>{Array.from({length:8},(_,i)=><i key={i}/>)}</div><span>INFRASTRUCTURE</span></motion.div>
             {tiles.map((_, index) => <ArchitectureTile key={index} index={index} progress={progress} reduced={reduced} />)}
             <motion.div className="ma-core" style={reduced ? { left: '9%', top: '12%', scale: .48 } : { left: coreLeft, top: coreTop, scale: coreScale }}><svg viewBox="0 0 32 32"><path d="M7 8h18v6H13v4h12v6H7v-6h12v-4H7Z" fill="currentColor" /></svg><i /></motion.div>
           </motion.div></motion.div><div className="ma-stage-caption"><span><i /> {['L’INFRASTRUCTURE', 'L’INTERFACE', 'L’APPLICATION'][reduced ? 2 : act]}</span><span>VISUALISATION CONCEPTUELLE</span></div>
