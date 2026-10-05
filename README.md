@@ -18,6 +18,7 @@ Le build exporte le site dans `out/`. Polices locales, aucun suivi d’audience 
 Identité bleu nuit, blanc cassé et menthe. Une vitrine consacrée aux réseaux, aux sites web, aux logiciels métier, aux ERP, aux CRM et aux back-offices.
 
 - `components/PremiumSite.tsx` : navigation responsive, services et aperçus, réalisations, approche, FAQ et contact.
+- `components/ProjectStory.tsx` : emblème et fil SVG continus entre cinq chapitres, points d’ancrage mesurés, trajet dans les marges et les espaces entre sections, contrôle de pause et version statique en mouvement réduit.
 - `components/PremiumMotion.tsx` : titre séquencé, profondeur du visuel, progression de lecture, accordéons et méthode animés.
 - `app/premium.css` : identité, mises en page et adaptations mobiles.
 - `public/images/infrastructure.jpg` : illustration d’infrastructure créée pour le site ; elle ne représente pas une installation client.
